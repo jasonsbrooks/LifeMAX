@@ -1,16 +1,29 @@
 {% extends "base.html" %}
 {% block content %}
+<h3>Create a new Tasklist</h3>
+<form action="/lists/tasklists/new" method="post" name="create_tasklist">
+    <p>
+        Enter the name of the tasklist below<br>
+        <input type="text" name="listname"><br>
+        <input type="submit" value="create">
+    </p>
+</form>
+<!-- <h3>Create a new Task</h3>
+<form action="/lists/tasks/new" method="post" name="create_task">
+    <p>
+        Taskname:
+        <input type="text" name="taskname"><br>
+        TaskList name:
+        <input type="text" name="listname"><br>
+        <input type="submit" value="create">
+    </p>
+</form> -->
 {% for tasklist in tasklists %}
-	<h1>{{tasklist.name}}</h1>
-<p>
-	<div class = "tasklist">
-		{% for task in tasklist %}
-		{% endfor %}
-		<div class = "task">
+	<table border="1">
+	<tr>
+	<th colspan = "2">{{tasklist.name}}</th>
+	</tr><br>
 
-		</div>
-	</div>
-</p>
 {% endfor %}
 
 {% endblock %}

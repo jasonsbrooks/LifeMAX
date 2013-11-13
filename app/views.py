@@ -20,11 +20,6 @@ facebook = oauth.remote_app('facebook',
     request_token_params={'scope': 'email'}
 )
 
-#next steps
-#get user id in the facebook authorization app-route
-#write html/css in lists.html
-#get all tasks that other people have completed
-
 @app.route('/')
 @app.route('/index')
 def index():
@@ -35,8 +30,26 @@ def index():
 def lists():
     user = getuser(session['id'])
     tls = user.tasklists
-    # tasklists = tasklists(userid) #why is this function an app route
-    return render_template('lists.html', title = 'Your Lists', tasklists = tls) 
+    return render_template('lists.html', title = 'Your Lists', tasklists = tls)
+
+@app.route('/lists/tasklists/new', methods=['POST'])
+def createList():
+    requestDict = request.values
+    requestDict = dict(zip(requestDict, map(lambda x: requestDict.get(x), requestDict)))
+    tl = TaskList(user=session['id'], name=requestDict['listname'])
+    db.session.add(tl)
+    db.session.commit()
+    return redirect(url_for("lists"))
+
+# @app.route('/lists/tasks/new', methods=['POST'])
+# def createList():
+#     requestDict = request.values
+#     requestDict = dict(zip(requestDict, map(lambda x: requestDict.get(x), requestDict)))
+    
+#     t = Task(user=session['id'], name=requestDict['listname'], tasklist=tl)
+#     db.session.add(t)
+#     db.session.commit()
+#     return redirect(url_for("lists"))
 
 @app.route('/feed')
 def feed():
@@ -57,9 +70,7 @@ def facebook_authorized(resp):
             request.args['error_description']
         )
     session['oauth_token'] = (resp['access_token'], '')
-    #birth = facebook.get('/birthday')
     me = facebook.get('/me')
-    #check for user here and get the facebook id!!!!!!!!!!!!!
     uID = checkIfUserExists(me.data['id'])
     if not uID:
         user = User(fbid=me.data['id'])
@@ -67,15 +78,12 @@ def facebook_authorized(resp):
         db.session.commit()
     session['id'] = checkIfUserExists(me.data['id'])
     #me = facebook.get('/me/friends')
-    # return 'Logged in as id=%s redirect=%s' % \
-    #     (me.data['id'], request.args.get('next'))
     return redirect(url_for("lists"))
 
 
 @facebook.tokengetter
 def get_facebook_oauth_token():
     return session.get('oauth_token')
-
 
 def checkIfUserExists(fbid):
     if User.query.filter(User.fbid == fbid).first() != None:
