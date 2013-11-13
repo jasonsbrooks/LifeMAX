@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block content %}
+{% for tasklist in tasklists %}
+	<h1>{{tasklist.name}}</h1>
+<p>
+	<div class = "tasklist">
+		{% for task in tasklist %}
+		{% endfor %}
+		<div class = "task">
+
+		</div>
+	</div>
+</p>
+{% endfor %}
+
+{% endblock %}

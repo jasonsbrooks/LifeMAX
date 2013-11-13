@@ -1,0 +1,17 @@
+<html>
+	<head>
+		{% if title %}
+    	<title>{{title}} - microblog</title>
+    	{% else %}
+    	<title>microblog</title>
+    	{% endif %}
+    </head>
+    <body>
+    	<div>LifeMax:
+        <a href="{{ url_for('index') }}">Home</a>
+        <a href="{{ url_for('lists') }}">Lists</a>
+        <a href="{{ url_for('feed') }}">Feed</a>
+    	</div>
+    	{% block content %}{% endblock %}
+	</body>
+</html>

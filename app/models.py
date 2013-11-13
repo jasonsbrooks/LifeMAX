@@ -7,6 +7,8 @@ class User(db.Model):
     md5token = db.Column(db.String(100))
     tasklists = db.relationship('TaskList', backref = 'owner', lazy = 'dynamic')
     tasks = db.relationship('Task', backref = 'owner', lazy = 'dynamic')
+    def __repr__(self):
+        return '<User %r>' % (self.id)
 
 class TaskList(db.Model):
 	id = db.Column(db.Integer, primary_key = True)
