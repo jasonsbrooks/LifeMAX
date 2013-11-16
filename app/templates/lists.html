@@ -8,48 +8,42 @@
         <input type="submit" value="create">
     </p>
 </form>
-<!-- <h3>Create a new Task</h3>
-<form action="/lists/tasks/new" method="post" name="create_task">
-    <p>
-        Taskname:
-        <input type="text" name="taskname"><br>
-        TaskList name:
-        <input type="text" name="listname"><br>
-        <input type="submit" value="create">
-    </p>
-</form> -->
 {% for tasklist in tasklists %}
 	<table border="1">
-	<tr>
-        <!-- <th colspan = "2"> </th> -->
-	<th>{{tasklist.name}}</th>
-    <td>
-        <form action="/lists/tasks/new" method="post" name="create_list">
+	<tr><th colspan="2">{{tasklist.name}}
+    <form action="/lists/tasklists/delete" method="post" name="delete_tasklist">
+        <input type="hidden" name="tlid" value="{{tasklist.id}}">
+        <input type="submit" value="delete tasklist">
+    </form></th></tr>
+    <tr><td colspan = "2">
+        <form action="/lists/tasks/new" method="post" name="create_task">
             <p>
-                Enter information about the task you want to add below<br>
+                Add a Task<br>
                 name: <input type="text" name="listname"><br>
+                description: <textarea name="description" cols="40" rows="5"></textarea><br>
+                location: <input type="text" name="location"><br>
                 start time: <input type="text" name="starttime"><br>
                 end time: <input type="text" name="endtime"><br>
-                <input type="hidden" name="tl" value="{{tasklist.id}}"><br>
-                <input type="submit" value="create">
+                <input type="hidden" name="tl" value="{{tasklist.id}}">
+                <input type="submit" value="add task">
             </p>
         </form>       
-    </td>
-	</tr><br>
+    </td></tr><br>
 
     {% for task in tasklist.tasks %}
-        <tr>
-            <td>
-                {{task.name}}
-            </td>
-            <td>
-                {{task.starttime}}
-            </td>
-        </tr>
+        <tr><th colspan="2">{{task.name}}
+        <form action="/lists/tasks/delete" method="post" name="delete_task">
+            <input type="hidden" name="tid" value="{{task.id}}">
+            <input type="submit" value="delete task">
+        </form></th></tr>
+        <tr><td colspan="2">{{task.description}}</td></tr>
+        <tr><td colspan="2">{{task.location}}</td></tr>
+        <tr><td>{{task.starttime}}</td>
+        <td>{{task.endtime}}</td></tr>
     {% endfor %}
-
-
-
 {% endfor %}
-
 {% endblock %}
+
+
+
+

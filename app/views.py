@@ -49,10 +49,32 @@ def createList():
 def createTask():
     requestDict = request.values
     requestDict = dict(zip(requestDict, map(lambda x: requestDict.get(x), requestDict)))
-    t = Task(user=getuser(session['md5token']).id, name=requestDict['listname'], tasklist = requestDict['tl'], description = "penis", location = "dumb", starttime=requestDict['starttime'], endtime=requestDict['endtime'], photo="www.google.com",completion=False)
+    t = Task(user=getuser(session['md5token']).id, name=requestDict['listname'], tasklist = requestDict['tl'], description = requestDict['description'], location = requestDict['location'], starttime=requestDict['starttime'], endtime=requestDict['endtime'], photo=False,completion=False)
     db.session.add(t)
     db.session.commit()
     return redirect(url_for("lists"))
+
+@app.route('/lists/tasklists/delete',methods=['POST'])
+def deleteTL():
+    requestDict = request.values
+    requestDict = dict(zip(requestDict, map(lambda x: requestDict.get(x), requestDict)))
+    tl = getTL(requestDict['tlid'])
+    for t in tl.tasks:
+        db.session.delete(t)
+    db.session.delete(tl)
+    db.session.commit()
+    return redirect(url_for("lists"))
+
+
+@app.route('/lists/tasks/delete', methods=['POST'])
+def deleteT():
+    requestDict = request.values
+    requestDict = dict(zip(requestDict, map(lambda x: requestDict.get(x), requestDict)))
+    t = getT(requestDict['tid'])
+    db.session.delete(t)
+    db.session.commit()
+    return redirect(url_for("lists"))
+
 
 @app.route('/feed')
 def feed():
@@ -98,6 +120,12 @@ def checkIfUserExists(fbid):
 
 def getuser(hashToken):
     return User.query.filter(User.md5token == hashToken).first()
+
+def getT(tid):
+    return Task.query.filter(Task.id==tid).first()
+
+def getTL(tlid):
+    return TaskList.query.filter(TaskList.id==tlid).first()
 
 # if getuser(session['token'])==None:
     # return "Access Denied!"
