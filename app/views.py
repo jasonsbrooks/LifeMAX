@@ -45,15 +45,14 @@ def createList():
     db.session.commit()
     return redirect(url_for("lists"))
 
-# @app.route('/lists/tasks/new', methods=['POST'])
-# def createList():
-#     requestDict = request.values
-#     requestDict = dict(zip(requestDict, map(lambda x: requestDict.get(x), requestDict)))
-    
-#     t = Task(user=session['id'], name=requestDict['listname'], tasklist=tl)
-#     db.session.add(t)
-#     db.session.commit()
-#     return redirect(url_for("lists"))
+@app.route('/lists/tasks/new', methods=['POST'])
+def createTask():
+    requestDict = request.values
+    requestDict = dict(zip(requestDict, map(lambda x: requestDict.get(x), requestDict)))
+    t = Task(user=getuser(session['md5token']).id, name=requestDict['listname'], tasklist = requestDict['tl'], description = "penis", location = "dumb", starttime=requestDict['starttime'], endtime=requestDict['endtime'], photo="www.google.com",completion=False)
+    db.session.add(t)
+    db.session.commit()
+    return redirect(url_for("lists"))
 
 @app.route('/feed')
 def feed():

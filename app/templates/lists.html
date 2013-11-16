@@ -21,8 +21,34 @@
 {% for tasklist in tasklists %}
 	<table border="1">
 	<tr>
-	<th colspan = "2">{{tasklist.name}}</th>
+        <!-- <th colspan = "2"> </th> -->
+	<th>{{tasklist.name}}</th>
+    <td>
+        <form action="/lists/tasks/new" method="post" name="create_list">
+            <p>
+                Enter information about the task you want to add below<br>
+                name: <input type="text" name="listname"><br>
+                start time: <input type="text" name="starttime"><br>
+                end time: <input type="text" name="endtime"><br>
+                <input type="hidden" name="tl" value="{{tasklist.id}}"><br>
+                <input type="submit" value="create">
+            </p>
+        </form>       
+    </td>
 	</tr><br>
+
+    {% for task in tasklist.tasks %}
+        <tr>
+            <td>
+                {{task.name}}
+            </td>
+            <td>
+                {{task.starttime}}
+            </td>
+        </tr>
+    {% endfor %}
+
+
 
 {% endfor %}
 
