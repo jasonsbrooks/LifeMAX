@@ -28,7 +28,11 @@ def index():
 
 @app.route('/lists')
 def lists():
-    user = getuser(session['md5token'])
+    try:
+        user = getuser(session['md5token'])
+    except KeyError:
+        return "access denied"
+
     tls = user.tasklists
     return render_template('lists.html', title = 'Your Lists', tasklists = tls)
 
