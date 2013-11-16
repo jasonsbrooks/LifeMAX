@@ -28,7 +28,7 @@ def index():
 
 @app.route('/lists')
 def lists():
-    user = getuser(session['id'])
+    user = getuser(session['md5token'])
     tls = user.tasklists
     return render_template('lists.html', title = 'Your Lists', tasklists = tls)
 
@@ -36,7 +36,7 @@ def lists():
 def createList():
     requestDict = request.values
     requestDict = dict(zip(requestDict, map(lambda x: requestDict.get(x), requestDict)))
-    tl = TaskList(user=session['id'], name=requestDict['listname'])
+    tl = TaskList(user=getuser(session['md5token']).id, name=requestDict['listname'])
     db.session.add(tl)
     db.session.commit()
     return redirect(url_for("lists"))
@@ -71,13 +71,16 @@ def facebook_authorized(resp):
         )
     session['oauth_token'] = (resp['access_token'], '')
     me = facebook.get('/me')
-    uID = checkIfUserExists(me.data['id'])
+    user=checkIfUserExists(me.data['id'])
+    uID = user.id
     if not uID:
         user = User(fbid=me.data['id'])
         db.session.add(user)
         db.session.commit()
-    session['id'] = checkIfUserExists(me.data['id'])
-    return redirect(url_for("lists"))
+    
+    if user:
+        session['md5token']= user.md5token
+        return redirect(url_for("lists"))
 
 
 @facebook.tokengetter
@@ -87,14 +90,14 @@ def get_facebook_oauth_token():
 
 def checkIfUserExists(fbid):
     if User.query.filter(User.fbid == fbid).first() != None:
-        return User.query.filter(User.fbid == fbid).first().id
+        return User.query.filter(User.fbid == fbid).first()
     return False
 
-def getuser(uid):
-    return User.query.filter(User.id == uid).first()
+def getuser(hashToken):
+    return User.query.filter(User.md5token == hashToken).first()
 
-
-
+# if getuser(session['token'])==None:
+    # return "Access Denied!"
 
 
 
