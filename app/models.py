@@ -8,6 +8,8 @@ class LifeMaxIds(db.Model):
 class User(db.Model):
 	__tablename__="User"
 	id = db.Column(db.Integer, primary_key = True)
+	name = db.Column(db.String(100))
+	profilepic=db.Column(db.String(1000))
 	fbid = db.Column(db.Integer, index = True, unique = True)
 	token = db.Column(db.String(1000))
 	md5token = db.Column(db.String(100))
@@ -17,6 +19,7 @@ class User(db.Model):
 	gidcalendar=db.Column(db.String(100),nullable=True)
 	tasks = db.relationship('Task', backref = 'owner', lazy = 'dynamic', primaryjoin="Task.user==User.id")
 	friends=db.relationship('Friends', backref = 'owner', lazy= 'dynamic', primaryjoin="Friends.userid==User.id")
+	privacy=db.Column(db.Integer)
 """
 class TaskList(db.Model):
 	https://www.facebook.com/connect/login_success.html#access_token=CAAIAKRek2qMBABA2zXOes2QTGD6EBiRKPOZBZAfwE51u6EVqWZCG1pqw2DIBPFGlyCnXYli0kkWrQMkAzhYclte0sAs5u8Glp5PCDTL40YykXjSxMlRqXUOpvAjfQReZA3ZBllWOUY05Hft6iqjQNOtaMdm8cF3Seb3zFyZCDKzR0yoZBw37KHLChyZBGbWgy69VHfdx6sAS7QZDZD&expires_in=5071
@@ -35,8 +38,10 @@ class Task(db.Model):
 	hashtag = db.Column(db.String(50))
 	description = db.Column(db.String(1200))
 	location = db.Column(db.String(50))
-	photo = db.Column(db.String(200))
+	pictureurl = db.Column(db.String(200))
 	completion = db.Column(db.Boolean)
+	timecompleted = db.Column(db.Integer, nullable=True, index = True)
+
 """
 class TaskInfinitives(db.Model):
 	__tablename__="TaskInfinitives"

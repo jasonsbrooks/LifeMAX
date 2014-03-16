@@ -12,7 +12,11 @@ from oauth2client import client
 import ast
 import json
 import sys, traceback
-
+from sqlalchemy import desc
+FACEBOOK_CLIENT_ID='XXXXXXX'
+FACEBOOK_CLIENT_SECRET='XXXXXX'
+GOOGLE_CLIENT_ID='XXXXXX'
+GOOGLE_CLIENT_SECRET='XXXXXXXXX'
 true=True
 @app.route('/api/fbcallback', methods = ['GET'])
 def verify():
@@ -53,7 +57,11 @@ def register():
 		lookupid=int(r.json()['id'])
 		if(models.User.query.filter_by(fbid=lookupid).first()!=None):
 			return "Error: User exists!"
-		newuser=models.User(fbid=lookupid, token=longToken, md5token=md5token)
+		r=requests.get('https://graph.facebook.com/'+str(friend.friendid))
+		name=r.json()['name']
+		r=requests.get('https://graph.facebook.com/'+str(friend.friendid)+'/picture',allow_redirects=False)
+		pic=r.headers['location']
+		newuser=models.User(fbid=lookupid, token=longToken, md5token=md5token,name=name,profilepic=pic)
 		db.session.add(newuser)
 		db.session.commit()
 		r=requests.get('https://graph.facebook.com/me/friends?access_token='+longToken)
@@ -95,6 +103,52 @@ def login():
 		return jsonify(authToken=longToken,fbid=lookupid, id=loginuser.id)
 	except:
 		return str(traceback.format_exception(*sys.exc_info()))
+
+@app.route('/api/user/<int:userid>/newsfeed', methods = ['GET'])
+def newsfeed(userid):
+	try:
+		hashToken=request.args.get('hashToken',None)
+		userToken=models.User.query.get(userId).md5token
+		if (hashToken!=userToken):
+			return "Error: Access Denied"
+		returndict={'posts':[]}
+		maxResults=request.args.get('maxResults',None)
+		if (maxResults==None):
+			maxResults=50
+		friendId=request.args.get('friendId',None)
+		hashtag=request.args.get('hashtag',None)
+		if (hashtag == None and friendId == None):
+			for task in models.Task.query.filter_by(completion=True).order_by(desc(models.Task.timecompleted)).filter((models.Task.owner in models.User.query.get(userid).friends)).limit(maxResults).all():
+				friendname=task.user.name
+				friendpic=task.user.profilepic
+				returndict['items'].append({'user':friendname,'profilepic':friendpic,'name':task.name, 'description':task.description,'location':task.location, 'pictureurl':task.pictureurl, 'completion':task.completion})		
+			return jsonify(returndict)
+		elif (hashtag != None and friendId == None):
+			for task in models.Task.query.filter_by(completion=True).order_by(desc(models.Task.timecompleted)).filter((models.Task.owner in models.User.query.get(userid).friends)).filter_by(hashtag=hashtag).limit(maxResults).all():
+				friendname=task.user.name
+				friendpic=task.user.profilepic
+				returndict['items'].append({'user':friendname,'profilepic':friendpic,'name':task.name, 'description':task.description,'location':task.location, 'pictureurl':task.pictureurl, 'completion':task.completion})
+			return jsonify(returndict)
+		elif (hashtag == None and friendId != None):
+			if (models.User.query.get(friendId) not in models.User.get(userid).friends):
+				return "Error: Access Denied"
+			for task in models.Task.query.filter_by(completion=True).order_by(desc(models.Task.timecompleted)).filter_by(user=friendId).limit(maxResults).all():
+				friendname=task.user.name
+				friendpic=task.user.profilepic
+				returndict['items'].append({'user':friendname,'profilepic':friendpic,'name':task.name, 'description':task.description,'location':task.location, 'pictureurl':task.pictureurl, 'completion':task.completion})
+			return jsonify(returndict)
+		elif (hashtag != None and friendId != None):
+			if (models.User.query.get(friendId) not in models.User.get(userid).friends):
+				return "Error: Access Denied"
+			for task in models.Task.query.filter_by(completion=True).order_by(desc(models.Task.timecompleted)).filter_by(user=friendId).filter_by(hashtag=hashtag).limit(maxResults).all():
+				friendname=task.user.name
+				friendpic=task.user.profilepic
+				returndict['items'].append({'user':friendname,'profilepic':friendpic,'name':task.name, 'description':task.description,'location':task.location, 'pictureurl':task.pictureurl, 'completion':task.completion})
+			return jsonify(returndict)
+
+	except:
+		return str(traceback.format_exception(*sys.exc_info()))
+"""
 
 @app.route('/api/user/<int:userid>/gcallist', methods=['GET'])
 def gcallist(userid):
@@ -198,8 +252,8 @@ def glogin():
 		user.gtoken=gtoken
 		user.grtoken=grtoken
 		user.lastupdatedtoken=int(time.time())
-		db.session.commit()	
-		"""
+		db.session.commit()
+		
 		service=gconnect(gtoken)
 		calendars=service.calendarList().list(fields='items',showHidden=True).execute()
 		summaries=[i['summary'] for i in calendars['items']]
@@ -209,7 +263,7 @@ def glogin():
 			user.gidcalendar=createdcalendar['id']
 			service.calendarList().insert(body={'id':createdcalendar['id'],'hidden':True}).execute()
 			db.session.commit()
-		"""
+		
 		return jsonify(success=True)
 	except:
 		return str(traceback.format_exception(*sys.exc_info()))
@@ -228,7 +282,26 @@ def gconnect(user):
 		return service
 	except:
 		return str(traceback.format_exception(*sys.exc_info()))
+"""
 @app.route('/api/user/<int:userId>/tasks', methods = ['POST'])
+def addTimelessTask2(userId):
+	try:
+		hashToken=request.get_json().get('hashToken')
+		userToken=models.User.query.get(userId).md5token
+		if (hashToken!=userToken):
+			return "Error: Access Denied"
+		name=request.get_json().get('name')
+		description=request.get_json().get('description')
+		location=request.get_json().get('location')
+		pictureurl=request.get_json().get('pictureurl')
+		hashtag=request.get_json().get('hashtag')
+		newTask=models.Task(user=userId, name=name, description=description, hashtag=hashtag, location=location, pictureurl=pictureurl, completion=False)
+		db.session.add(newTask)
+		db.session.commit()
+		return jsonify(success=True,taskID=newTask.id)
+	except:
+		return str(traceback.format_exception(*sys.exc_info()))
+"""
 def addTask(userId):
 	try:
 		#hashToken=request.form.get('hashToken')
@@ -237,14 +310,6 @@ def addTask(userId):
 		userToken=user.md5token
 		if (hashToken!=userToken):
 			return "Error: Access Denied"
-		"""name=request.form.get('name')
-		description=request.form.get('description')
-		location=request.form.get('location')
-		starttime=request.form.get('starttime')
-		endtime=request.form.get('endtime')
-		photo=request.form.get('pictureurl')
-		hashtag=request.form.get('hashtag')
-		recurrence=request.form.get('recurrence',None)"""
 		name=request.get_json().get('name')
 		description=request.get_json().get('description')
 		location=request.get_json().get('location')
@@ -275,8 +340,23 @@ def addTask(userId):
 		newtask=service.events().insert(calendarId=user.gidcalendar, body=event).execute()
 		return jsonify(newtask)
 	except:
-		return str(traceback.format_exception(*sys.exc_info()))
+		return str(traceback.format_exception(*sys.exc_info()))"""
 @app.route('/api/user/<int:userId>/tasks', methods = ['GET'])
+def getTimelessTasks2(userId):
+	try:
+		hashToken=request.args.get('hashToken')
+		userToken=models.User.query.get(userId).md5token
+		if (hashToken!=userToken):
+			return "Error: Access Denied"
+		returndict={'items':[]}
+		for task in models.Task.query.all():
+			returndict['items'].append({'name':task.name,'description':task.description,'location':task.location,
+				'pictureurl':task.pictureurl, 'completion':task.completion})
+		
+		return jsonify(returndict)
+	except:
+		return str(traceback.format_exception(*sys.exc_info()))
+"""
 def getTasks(userId):
 	try:
 		hashToken=request.args.get('hashToken')
@@ -296,10 +376,10 @@ def getTasks(userId):
 		service=gconnect(models.LifeMaxIds.query.first())
 		
 		events=service.events().list(calendarId=user.gidcalendar,maxResults=maxEvents,orderBy='startTime',singleEvents=True,timeMax=endtime,timeMin=starttime,sharedExtendedProperty=hashtag).execute()
-		return Response(json.dumps(events['items']),  mimetype='application/json')
+		return Response(json.dumps(events['items']), mimetype='application/json')
 	except:
 		return str(traceback.format_exception(*sys.exc_info()))
-
+"""
 @app.route('/api/user/<int:userId>/deletetasks', methods = ['POST'])
 def deleteTask(userId):
 	try:
@@ -317,8 +397,8 @@ def deleteTask(userId):
 			return "Success"
 	except:
 		return str(traceback.format_exception(*sys.exc_info()))
-
-@app.route('/api/user/<int:userId>/timelesstasks', methods = ['POST'])
+"""
+//@app.route('/api/user/<int:userId>/timelesstasks', methods = ['POST'])
 def addTimelessTask(userId):
 	try:
 		hashToken=request.get_json().get('hashToken')
@@ -328,8 +408,6 @@ def addTimelessTask(userId):
 		name=request.get_json().get('name')
 		description=request.get_json().get('description')
 		location=request.get_json().get('location')
-		starttime=request.get_json().get('starttime')
-		endtime=request.get_json().get('endtime')
 		photo=request.get_json().get('pictureurl')
 		newTask=models.Task(user=userId, name=name, tasklist=tasklistid, description=description, location=location, starttime=int(starttime), endtime=int(endtime), photo=photo, completion=False)
 		db.session.add(newTask)
@@ -338,8 +416,68 @@ def addTimelessTask(userId):
 		return jsonify(success=True,taskID=newTask.id)
 	except:
 		return str(traceback.format_exception(*sys.exc_info()))
-
-@app.route('/api/user/<int:userId>/timelesstasks', methods = ['GET'])
+"""
+@app.route('/api/user/<int:userId>/updatetask', methods = ['POST'])
+def updateTask(userId):
+	try:
+		hashToken=request.args.get('hashToken',None)
+		user=models.User.query.get(userId)
+		userToken=user.md5token
+		if (hashToken!=userToken):
+			return "Error: Access Denied"
+		taskid=request.get_json().get('taskId',None)
+		task=models.Task.query.get(taskid)
+		if (task.user.id!=userId):
+			return "Error: Access Denied"
+		name=request.get_json().get('name',None)
+		description=request.get_json().get('description',None)
+		location=request.get_json().get('location',None)
+		pictureurl=request.get_json().get('pictureurl',None)
+		hashtag=request.get_json().get('hashtag',None)
+		completion=request.get_json().get('completion',None)
+		if (name!=None):
+			task.name=name
+		if (description!=None):
+			task.description=description
+		if (location!=None):
+			task.location=location
+		if (pictureurl!=None):
+			task.pictureurl=pictureurl
+		if (hashtag!=None):
+			task.hashtag=hashtag
+		if (completion=='True'):
+			task.completion=True
+			task.timecompleted=int(time.time())
+		elif (completion=='False'):
+			task.completion=False
+			task.timecompleted=None
+		db.session.commit()
+		return jsonify(name=task.name,description=task.description,location=task.location,pictureurl=task.pictureurl,hashtag=task.hashtag,completion=task.completion)
+	except:
+		return str(traceback.format_exception(*sys.exc_info()))
+"""
+@app.route('/api/user/<int:userId>/completetask', methods=['POST'])
+def completeTask(userId):
+	try:
+		hashToken=request.args.get('hashToken')
+		user=models.User.query.get(userId)
+		userToken=user.md5token
+		if (hashToken!=userToken):
+			return "Error: Access Denied"
+		taskid=request.get_json().get('taskid')
+		task=models.Task.query.get(taskid)
+		if (task.user.id!=userId)
+			return "Error: Access Denied"
+		task.timecompleted=int(time.time())
+		db.session.commit()
+		ct=CompletedTask(user=userId,task=taskid)
+		db.session.add(ct)
+		db.session.commit()
+	except:
+		return str(traceback.format_exception(*sys.exc_info()))
+"""
+"""
+//@app.route('/api/user/<int:userId>/timelesstasks', methods = ['GET'])
 def getTimelessTasks(userId):
 	try:
 		hashToken=request.args.get('hashToken')
@@ -347,7 +485,7 @@ def getTimelessTasks(userId):
 		if (hashToken!=userToken):
 			return "Error: Access Denied"
 		returndict={'items':[]}
-		for i in models.Task.query.all():
+		for task in models.Task.query.all():
 			returndict['items'].append({'name':task.name,'description':task.description,'location':task.location,
 				'pictureurl':task.pictureurl, 'completion':task.completion})
 		
@@ -373,6 +511,7 @@ def deleteTimelessTask(userId):
 		return jsonify(success=True)
 	except:
 		return str(traceback.format_exception(*sys.exc_info()))
+"""
 @app.route('/caslogin', methods = ['GET'])
 def caslogin():
 	if request.args.get('ticket')==None:
