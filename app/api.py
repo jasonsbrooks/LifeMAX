@@ -137,13 +137,13 @@ def newsfeed(userid):
 			if (models.User.query.get(f.friendid).privacy==0):
 				listoffriends.append(f.friendid)
 		if (hashtag == None and friendId == None):
-			for task in models.Task.query.filter_by(completion=True).order_by(desc(models.Task.timecompleted)).filter(models.Task.user._in(listoffriends)).limit(maxResults).all():
+			for task in models.Task.query.filter_by(completion=True).order_by(desc(models.Task.timecompleted)).filter(models.Task.user.in_(listoffriends)).limit(maxResults).all():
 				friendname=task.user.name
 				friendpic=task.user.profilepic
 				returndict['items'].append({'user':friendname,'profilepic':friendpic,'name':task.name, 'description':task.description,'location':task.location, 'pictureurl':task.pictureurl, 'completion':task.completion})		
 			return jsonify(returndict)
 		elif (hashtag != None and friendId == None):
-			for task in models.Task.query.filter_by(completion=True).order_by(desc(models.Task.timecompleted)).filter(models.Task.user._in(listoffriends)).filter_by(hashtag=hashtag).limit(maxResults).all():
+			for task in models.Task.query.filter_by(completion=True).order_by(desc(models.Task.timecompleted)).filter(models.Task.user.in_(listoffriends)).filter_by(hashtag=hashtag).limit(maxResults).all():
 				friendname=task.user.name
 				friendpic=task.user.profilepic
 				returndict['items'].append({'user':friendname,'profilepic':friendpic,'name':task.name, 'description':task.description,'location':task.location, 'pictureurl':task.pictureurl, 'completion':task.completion})
