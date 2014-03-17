@@ -10,7 +10,7 @@ class User(db.Model):
 	id = db.Column(db.Integer, primary_key = True)
 	name = db.Column(db.String(100))
 	profilepic=db.Column(db.String(1000))
-	fbid = db.Column(db.Integer, index = True, unique = True)
+	fbid = db.Column(db.String(100), index = True, unique = True)
 	token = db.Column(db.String(1000))
 	md5token = db.Column(db.String(100))
 	#gtoken = db.Column(db.String(100),nullable=True)

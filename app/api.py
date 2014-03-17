@@ -54,14 +54,15 @@ def register():
 			return "Error: Invalid Token"
 		md5token=hashlib.md5(longToken).hexdigest()
 		r=requests.get('https://graph.facebook.com/me?access_token='+longToken)
-		lookupid=int(r.json()['id'])
+		lookupid=r.json()['id']
 		if(models.User.query.filter_by(fbid=lookupid).first()!=None):
 			return "Error: User exists!"
-		r=requests.get('https://graph.facebook.com/'+str(lookupid))
+		r=requests.get('https://graph.facebook.com/'+lookupid)
 		name=r.json()['name']
-		r=requests.get('https://graph.facebook.com/'+str(lookupid)+'/picture',allow_redirects=False)
+		r=requests.get('https://graph.facebook.com/'+lookupid+'/picture',allow_redirects=False)
 		pic=r.headers['location']
-		newuser=models.User(fbid=lookupid, token=longToken, md5token=md5token,name=name,profilepic=pic)
+		privacy=request.get_json().get('privacy')
+		newuser=models.User(fbid=lookupid, token=longToken, md5token=md5token,name=name,profilepic=pic,privacy=privacy)
 		db.session.add(newuser)
 		db.session.commit()
 		r=requests.get('https://graph.facebook.com/me/friends?access_token='+longToken)
@@ -83,6 +84,18 @@ def register():
 		return jsonify(authToken=longToken,fbid=lookupid,id=newuser.id)
 	except:
 		return str(traceback.format_exception(*sys.exc_info()))
+@app.route('/api/<int:userid>/privacychange',methods=['POST'])
+def privacychange(userid):
+	try:
+		hashToken=request.form.get('hashToken',None)
+		userToken=models.User.query.get(userid).md5token
+		if (hashToken!=userToken):
+			return "Error: Access Denied"
+		privacy=int(request.form.get('privacy'))
+		models.User.query.get(userid).privacy=privacy
+		db.session.commit()
+	except:
+		return str(traceback.format_exception(*sys.exc_info()))
 
 
 @app.route('/api/login', methods = ['GET'])
@@ -94,7 +107,7 @@ def login():
 		longToken=parse_qs(r.text)['access_token'][0]
 		md5token=hashlib.md5(longToken).hexdigest()
 		r=requests.get('https://graph.facebook.com/me?access_token='+longToken)
-		lookupid=int(r.json()['id'])
+		lookupid=r.json()['id']
 		loginuser=models.User.query.filter_by(fbid=lookupid).first()
 		if loginuser==None:
 			return "Error: User does not exist!"
@@ -120,7 +133,8 @@ def newsfeed(userid):
 		listoffriends=[]
 		friendtable=models.User.query.get(userid).friends
 		for f in friendtable:
-			listoffriends.append(f.friendid)
+			if (models.User.query.get(f.friendid).privacy==0):
+				listoffriends.append(f.friendid)
 		if (hashtag == None and friendId == None):
 			for task in models.Task.query.filter_by(completion=True).order_by(desc(models.Task.timecompleted)).filter(models.Task.user._in(listoffriends)).limit(maxResults).all():
 				friendname=task.user.name
@@ -134,7 +148,7 @@ def newsfeed(userid):
 				returndict['items'].append({'user':friendname,'profilepic':friendpic,'name':task.name, 'description':task.description,'location':task.location, 'pictureurl':task.pictureurl, 'completion':task.completion})
 			return jsonify(returndict)
 		elif (hashtag == None and friendId != None):
-			if (models.User.query.get(friendId) not in models.User.get(userid).friends):
+			if ((models.User.query.get(friendId) not in models.User.get(userid).friends) or models.User.query.get(friendId).privacy==1):
 				return "Error: Access Denied"
 			for task in models.Task.query.filter_by(completion=True).order_by(desc(models.Task.timecompleted)).filter_by(user=friendId).limit(maxResults).all():
 				friendname=task.user.name
@@ -142,7 +156,7 @@ def newsfeed(userid):
 				returndict['items'].append({'user':friendname,'profilepic':friendpic,'name':task.name, 'description':task.description,'location':task.location, 'pictureurl':task.pictureurl, 'completion':task.completion})
 			return jsonify(returndict)
 		elif (hashtag != None and friendId != None):
-			if (models.User.query.get(friendId) not in models.User.get(userid).friends):
+			if ((models.User.query.get(friendId) not in models.User.get(userid).friends) or models.User.query.get(friendId).privacy==1):
 				return "Error: Access Denied"
 			for task in models.Task.query.filter_by(completion=True).order_by(desc(models.Task.timecompleted)).filter_by(user=friendId).filter_by(hashtag=hashtag).limit(maxResults).all():
 				friendname=task.user.name
