@@ -1,4 +1,0 @@
-flintr
-======
-
-Flintr application.
