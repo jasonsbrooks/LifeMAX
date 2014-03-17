@@ -368,7 +368,7 @@ def getTimelessTasks2(userId):
 		if (hashToken!=userToken):
 			return "Error: Access Denied"
 		returndict={'items':[]}
-		for task in models.Task.query.filter(Task.user == userID).all():
+		for task in models.Task.query.filter(models.Task.user == userID).all():
 			returndict['items'].append({'id':task.id,'hashtag':task.hashtag,'user':userID,'name':task.name,'description':task.description,'location':task.location,
 				'pictureurl':task.pictureurl, 'completion':task.completion})
 		

@@ -46,6 +46,9 @@ class Task(db.Model):
 	completion = db.Column(db.Boolean)
 	timecompleted = db.Column(db.Integer, nullable=True, index = True)
 
+	# def __repr__(self):
+	# 	return '#%d: User: %d, Name: %s, Hashtag: %s, Description: %s, Location: %s, PictureURL: %s, Completion: %d' % (self.id, self.name, self.profilepic, self.fbid, self.privacy)
+
 """
 class TaskInfinitives(db.Model):
 	__tablename__="TaskInfinitives"
