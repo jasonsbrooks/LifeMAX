@@ -408,9 +408,12 @@ def deleteTask(userId):
 		if (hashToken!=userToken):
 			return "Access Denied"
 		taskToDelete=models.Task.query.get(taskId)
-		db.session.delete(taskToDelete)
-		db.session.commit()
-		return jsonify(success=True)
+		if taskToDelete != None:
+			db.session.delete(taskToDelete)
+			db.session.commit()
+			return jsonify(success=True)
+		else:
+			return jsonify(success=False)
 	except:
 		return str(traceback.format_exception(*sys.exc_info()))
 """	try:
