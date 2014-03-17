@@ -13,8 +13,8 @@ import ast
 import json
 import sys, traceback
 from sqlalchemy import desc
-FACEBOOK_CLIENT_ID='XXXXXXX'
-FACEBOOK_CLIENT_SECRET='XXXXXX'
+FACEBOOK_CLIENT_ID='XXXX'
+FACEBOOK_CLIENT_SECRET='XXX'
 GOOGLE_CLIENT_ID='XXXXXX'
 GOOGLE_CLIENT_SECRET='XXXXXXXXX'
 true=True
@@ -57,9 +57,9 @@ def register():
 		lookupid=int(r.json()['id'])
 		if(models.User.query.filter_by(fbid=lookupid).first()!=None):
 			return "Error: User exists!"
-		r=requests.get('https://graph.facebook.com/'+str(friend.friendid))
+		r=requests.get('https://graph.facebook.com/'+str(lookupid))
 		name=r.json()['name']
-		r=requests.get('https://graph.facebook.com/'+str(friend.friendid)+'/picture',allow_redirects=False)
+		r=requests.get('https://graph.facebook.com/'+str(lookupid)+'/picture',allow_redirects=False)
 		pic=r.headers['location']
 		newuser=models.User(fbid=lookupid, token=longToken, md5token=md5token,name=name,profilepic=pic)
 		db.session.add(newuser)
