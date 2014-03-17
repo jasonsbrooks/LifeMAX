@@ -2,9 +2,9 @@ from app import db
 class LifeMaxIds(db.Model):
 	__tablename__="LifeMaxIds"
 	id = db.Column(db.Integer, primary_key = True)
-	gtoken = db.Column(db.String(100),nullable=True)
-	grtoken = db.Column(db.String(100),nullable=True)
-	lastupdatedtoken = db.Column(db.Integer)
+	#gtoken = db.Column(db.String(100),nullable=True)
+	#grtoken = db.Column(db.String(100),nullable=True)
+	#lastupdatedtoken = db.Column(db.Integer)
 class User(db.Model):
 	__tablename__="User"
 	id = db.Column(db.Integer, primary_key = True)
@@ -13,10 +13,10 @@ class User(db.Model):
 	fbid = db.Column(db.Integer, index = True, unique = True)
 	token = db.Column(db.String(1000))
 	md5token = db.Column(db.String(100))
-	gtoken = db.Column(db.String(100),nullable=True)
-	grtoken = db.Column(db.String(100),nullable=True)
+	#gtoken = db.Column(db.String(100),nullable=True)
+	#grtoken = db.Column(db.String(100),nullable=True)
 	lastupdatedtoken = db.Column(db.Integer, nullable=True)
-	gidcalendar=db.Column(db.String(100),nullable=True)
+	#gidcalendar=db.Column(db.String(100),nullable=True)
 	tasks = db.relationship('Task', backref = 'owner', lazy = 'dynamic', primaryjoin="Task.user==User.id")
 	friends=db.relationship('Friends', backref = 'owner', lazy= 'dynamic', primaryjoin="Friends.userid==User.id")
 	privacy=db.Column(db.Integer)

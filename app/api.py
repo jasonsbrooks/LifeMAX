@@ -13,7 +13,7 @@ import ast
 import json
 import sys, traceback
 from sqlalchemy import desc
-FACEBOOK_CLIENT_ID='XXXX'
+FACEBOOK_CLIENT_ID='XXX'
 FACEBOOK_CLIENT_SECRET='XXX'
 GOOGLE_CLIENT_ID='XXXXXX'
 GOOGLE_CLIENT_SECRET='XXXXXXXXX'
@@ -74,13 +74,13 @@ def register():
 				db.session.add(newfriend1)
 				db.session.add(newfriend2)
 				db.session.commit()
-		service=gconnect(models.LifeMaxIds.query.first())
-		body={'summary': 'User '+str(newuser.id)+'\'sLifeMaxCalendar'}
-		createdcalendar=service.calendars().insert(body=body).execute()
-		newuser.gidcalendar=createdcalendar['id']
-		service.calendarList().insert(body={'id':createdcalendar['id']}).execute()
+		#service=gconnect(models.LifeMaxIds.query.first())
+		#body={'summary': 'User '+str(newuser.id)+'\'sLifeMaxCalendar'}
+		#createdcalendar=service.calendars().insert(body=body).execute()
+		#newuser.gidcalendar=createdcalendar['id']
+		#service.calendarList().insert(body={'id':createdcalendar['id']}).execute()
 		db.session.commit()
-		return jsonify(authToken=longToken,fbid=lookupid,id=newuser.id,gidcalendar=newuser.gidcalendar)
+		return jsonify(authToken=longToken,fbid=lookupid,id=newuser.id)
 	except:
 		return str(traceback.format_exception(*sys.exc_info()))
 
@@ -108,7 +108,7 @@ def login():
 def newsfeed(userid):
 	try:
 		hashToken=request.args.get('hashToken',None)
-		userToken=models.User.query.get(userId).md5token
+		userToken=models.User.query.get(userid).md5token
 		if (hashToken!=userToken):
 			return "Error: Access Denied"
 		returndict={'posts':[]}
@@ -384,6 +384,22 @@ def getTasks(userId):
 def deleteTask(userId):
 	try:
 		hashToken=request.get_json().get('hashToken')
+		taskId=request.get_json().get('taskId');
+		userToken=models.User.query.get(userId).md5token
+		if (hashToken!=userToken):
+			return "Access Denied"
+		if (models.TaskList.query.get(tasklistid).user!=userId):
+			return "Access Denied"
+		if (models.Task.query.get(taskid).tasklist!=tasklistid):
+			return jsonify(success=False)
+		taskToDelete=models.Task.query.get(taskid)
+		db.session.delete(taskToDelete)
+		db.session.commit()
+		return jsonify(success=True)
+	except:
+		return str(traceback.format_exception(*sys.exc_info()))
+"""	try:
+		hashToken=request.get_json().get('hashToken')
 		user=models.User.query.get(userId)
 		userToken=user.md5token
 		if (hashToken!=userToken):
@@ -398,7 +414,8 @@ def deleteTask(userId):
 	except:
 		return str(traceback.format_exception(*sys.exc_info()))
 """
-//@app.route('/api/user/<int:userId>/timelesstasks', methods = ['POST'])
+"""
+#@app.route('/api/user/<int:userId>/timelesstasks', methods = ['POST'])
 def addTimelessTask(userId):
 	try:
 		hashToken=request.get_json().get('hashToken')
@@ -455,6 +472,7 @@ def updateTask(userId):
 		return jsonify(name=task.name,description=task.description,location=task.location,pictureurl=task.pictureurl,hashtag=task.hashtag,completion=task.completion)
 	except:
 		return str(traceback.format_exception(*sys.exc_info()))
+
 """
 @app.route('/api/user/<int:userId>/completetask', methods=['POST'])
 def completeTask(userId):
@@ -475,9 +493,11 @@ def completeTask(userId):
 		db.session.commit()
 	except:
 		return str(traceback.format_exception(*sys.exc_info()))
+		"""
 """
 """
-//@app.route('/api/user/<int:userId>/timelesstasks', methods = ['GET'])
+#@app.route('/api/user/<int:userId>/timelesstasks', methods = ['GET'])
+"""
 def getTimelessTasks(userId):
 	try:
 		hashToken=request.args.get('hashToken')
@@ -534,7 +554,6 @@ def md5sum(file):
     return d.hexdigest()
 
 @app.route('/api/user/<int:userid>/photoupload', methods = ['POST'])
-
 def photoupload(userid):
 	hashToken=request.form.get('hashToken')
 	userToken=models.User.query.get(userId).md5token
