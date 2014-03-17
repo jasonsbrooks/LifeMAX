@@ -13,8 +13,8 @@ import ast
 import json
 import sys, traceback
 from sqlalchemy import desc
-FACEBOOK_CLIENT_ID='XXX'
-FACEBOOK_CLIENT_SECRET='XXX'
+FACEBOOK_CLIENT_ID='670660326330598'
+FACEBOOK_CLIENT_SECRET='0ec602b31b2220aaafc41043b699abcf'
 GOOGLE_CLIENT_ID='XXXXXX'
 GOOGLE_CLIENT_SECRET='XXXXXXXXX'
 true=True
@@ -117,14 +117,18 @@ def newsfeed(userid):
 			maxResults=50
 		friendId=request.args.get('friendId',None)
 		hashtag=request.args.get('hashtag',None)
+		listoffriends=[]
+		friendtable=models.User.query.get(userid).friends
+		for f in friendtable:
+			listoffriends.append(f.friendid)
 		if (hashtag == None and friendId == None):
-			for task in models.Task.query.filter_by(completion=True).order_by(desc(models.Task.timecompleted)).filter((models.Task.owner in models.User.query.get(userid).friends)).limit(maxResults).all():
+			for task in models.Task.query.filter_by(completion=True).order_by(desc(models.Task.timecompleted)).filter(models.Task.user._in(listoffriends)).limit(maxResults).all():
 				friendname=task.user.name
 				friendpic=task.user.profilepic
 				returndict['items'].append({'user':friendname,'profilepic':friendpic,'name':task.name, 'description':task.description,'location':task.location, 'pictureurl':task.pictureurl, 'completion':task.completion})		
 			return jsonify(returndict)
 		elif (hashtag != None and friendId == None):
-			for task in models.Task.query.filter_by(completion=True).order_by(desc(models.Task.timecompleted)).filter((models.Task.owner in models.User.query.get(userid).friends)).filter_by(hashtag=hashtag).limit(maxResults).all():
+			for task in models.Task.query.filter_by(completion=True).order_by(desc(models.Task.timecompleted)).filter(models.Task.user._in(listoffriends)).filter_by(hashtag=hashtag).limit(maxResults).all():
 				friendname=task.user.name
 				friendpic=task.user.profilepic
 				returndict['items'].append({'user':friendname,'profilepic':friendpic,'name':task.name, 'description':task.description,'location':task.location, 'pictureurl':task.pictureurl, 'completion':task.completion})
