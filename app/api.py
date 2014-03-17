@@ -132,6 +132,7 @@ def newsfeed(userid):
 		friendId=request.args.get('friendId',None)
 		hashtag=request.args.get('hashtag',None)
 		listoffriends=[]
+		listoffriends.append(userid)
 		friendtable=models.User.query.get(userid).friends
 		for f in friendtable:
 			if (models.User.query.get(f.friendid).privacy==0):
