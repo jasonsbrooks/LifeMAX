@@ -20,6 +20,10 @@ class User(db.Model):
 	tasks = db.relationship('Task', backref = 'owner', lazy = 'dynamic', primaryjoin="Task.user==User.id")
 	friends=db.relationship('Friends', backref = 'owner', lazy= 'dynamic', primaryjoin="Friends.userid==User.id")
 	privacy=db.Column(db.Integer)
+
+	def __repr__(self):
+		return '#%d: Name: %s, ProfilePic: %s, FBID: %s, Privacy: %d' % (self.id, self.name, self.profilepic, self.fbid, self.privacy)
+
 """
 class TaskList(db.Model):
 	https://www.facebook.com/connect/login_success.html#access_token=CAAIAKRek2qMBABA2zXOes2QTGD6EBiRKPOZBZAfwE51u6EVqWZCG1pqw2DIBPFGlyCnXYli0kkWrQMkAzhYclte0sAs5u8Glp5PCDTL40YykXjSxMlRqXUOpvAjfQReZA3ZBllWOUY05Hft6iqjQNOtaMdm8cF3Seb3zFyZCDKzR0yoZBw37KHLChyZBGbWgy69VHfdx6sAS7QZDZD&expires_in=5071
