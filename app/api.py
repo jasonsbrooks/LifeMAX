@@ -142,13 +142,13 @@ def newsfeed(userid):
 			for task in models.Task.query.order_by(desc(models.Task.timecompleted)).filter(models.Task.user.in_(listoffriends)).limit(maxResults).all():
 				u = models.User.query.get(task.user)
 				userJSON = {'id' : u.id, 'name' : u.name}
-				returndict['items'].append({'id':task.id, 'user':userJSON,'profilepic':u.profilepic,'name':task.name, 'description':task.description,'location':task.location, 'pictureurl':task.pictureurl, 'completion':task.completion})		
+				returndict['items'].append({'id':task.id, 'user':userJSON,'hashtag':task.hashtag,'profilepic':u.profilepic,'name':task.name, 'description':task.description,'location':task.location, 'pictureurl':task.pictureurl, 'completion':task.completion})		
 			return jsonify(returndict)
 		elif (hashtag != None and friendId == None):
 			for task in models.Task.query.filter_by(completion=True).order_by(desc(models.Task.timecompleted)).filter(models.Task.user.in_(listoffriends)).filter_by(hashtag=hashtag).limit(maxResults).all():
 				u = models.User.query.get(task.user)
 				userJSON = {'id' : u.id, 'name' : u.name}
-				returndict['items'].append({'id':task.id, 'user':userJSON,'profilepic':u.profilepic,'name':task.name, 'description':task.description,'location':task.location, 'pictureurl':task.pictureurl, 'completion':task.completion})
+				returndict['items'].append({'id':task.id, 'user':userJSON,'hashtag':task.hashtag,'profilepic':u.profilepic,'name':task.name, 'description':task.description,'location':task.location, 'pictureurl':task.pictureurl, 'completion':task.completion})
 			return jsonify(returndict)
 		elif (hashtag == None and friendId != None):
 			if ((models.User.query.get(friendId) not in models.User.get(userid).friends) or models.User.query.get(friendId).privacy==1):
@@ -156,7 +156,7 @@ def newsfeed(userid):
 			for task in models.Task.query.filter_by(completion=True).order_by(desc(models.Task.timecompleted)).filter_by(user=friendId).limit(maxResults).all():
 				u = models.User.query.get(task.user)
 				userJSON = {'id' : u.id, 'name' : u.name}
-				returndict['items'].append({'id':task.id, 'user':userJSON,'profilepic':u.profilepic,'name':task.name, 'description':task.description,'location':task.location, 'pictureurl':task.pictureurl, 'completion':task.completion})
+				returndict['items'].append({'id':task.id, 'user':userJSON,'hashtag':task.hashtag,'profilepic':u.profilepic,'name':task.name, 'description':task.description,'location':task.location, 'pictureurl':task.pictureurl, 'completion':task.completion})
 			return jsonify(returndict)
 		elif (hashtag != None and friendId != None):
 			if ((models.User.query.get(friendId) not in models.User.get(userid).friends) or models.User.query.get(friendId).privacy==1):
@@ -164,7 +164,7 @@ def newsfeed(userid):
 			for task in models.Task.query.filter_by(completion=True).order_by(desc(models.Task.timecompleted)).filter_by(user=friendId).filter_by(hashtag=hashtag).limit(maxResults).all():
 				u = models.User.query.get(task.user)
 				userJSON = {'id' : u.id, 'name' : u.name}
-				returndict['items'].append({'id':task.id, 'user':userJSON,'profilepic':u.profilepic,'name':task.name, 'description':task.description,'location':task.location, 'pictureurl':task.pictureurl, 'completion':task.completion})
+				returndict['items'].append({'id':task.id, 'user':userJSON,'hashtag':task.hashtag,'profilepic':u.profilepic,'name':task.name, 'description':task.description,'location':task.location, 'pictureurl':task.pictureurl, 'completion':task.completion})
 			return jsonify(returndict)
 
 	except:
@@ -371,8 +371,9 @@ def getTimelessTasks2(userId):
 			return "Error: Access Denied"
 		returndict={'items':[]}
 		for task in models.Task.query.filter(models.Task.user == userId).all():
-			returndict['items'].append({'id':task.id,'hashtag':task.hashtag,'user':userId,'name':task.name,'description':task.description,'location':task.location,
-				'pictureurl':task.pictureurl, 'completion':task.completion})
+			u = models.User.query.get(task.user)
+			userJSON = {'id' : u.id, 'name' : u.name}
+			returndict['items'].append({'id':task.id, 'user':userJSON,'hashtag':task.hashtag, 'profilepic':u.profilepic,'name':task.name, 'description':task.description,'location':task.location, 'pictureurl':task.pictureurl, 'completion':task.completion})		
 		
 		return jsonify(returndict)
 	except:
