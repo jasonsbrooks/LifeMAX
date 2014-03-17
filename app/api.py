@@ -125,7 +125,7 @@ def newsfeed(userid):
 		userToken=models.User.query.get(userid).md5token
 		if (hashToken!=userToken):
 			return "Error: Access Denied"
-		returndict={'posts':[]}
+		returndict={'items':[]}
 		maxResults=request.args.get('maxResults',None)
 		if (maxResults==None):
 			maxResults=50
