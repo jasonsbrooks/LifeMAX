@@ -407,6 +407,8 @@ def deleteTask(userId):
 		userToken=models.User.query.get(userId).md5token
 		if (hashToken!=userToken):
 			return "Access Denied"
+		if taskId is None:
+			return jsonify(success=False)
 		taskToDelete=models.Task.query.get(taskId)
 		if taskToDelete != None:
 			db.session.delete(taskToDelete)
