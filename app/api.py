@@ -140,9 +140,9 @@ def newsfeed(userid):
 		if (hashtag == None and friendId == None):
 			# for task in models.Task.query.filter_by(completion=True).order_by(desc(models.Task.timecompleted)).filter(models.Task.user.in_(listoffriends)).limit(maxResults).all():
 			for task in models.Task.query.order_by(desc(models.Task.timecompleted)).filter(models.Task.user.in_(listoffriends)).limit(maxResults).all():
-				friendname=models.User.query.get(task.user).name
-				friendpic=models.User.query.get(task.user).profilepic
-				returndict['items'].append({'user':friendname,'profilepic':friendpic,'name':task.name, 'description':task.description,'location':task.location, 'pictureurl':task.pictureurl, 'completion':task.completion})		
+				u = models.User.query.get(task.user)
+				userJSON = {'id' : u.id, 'name' : u.name}
+				returndict['items'].append({'user':userJSON,'profilepic':u.profilepic,'name':task.name, 'description':task.description,'location':task.location, 'pictureurl':task.pictureurl, 'completion':task.completion})		
 			return jsonify(returndict)
 		elif (hashtag != None and friendId == None):
 			for task in models.Task.query.filter_by(completion=True).order_by(desc(models.Task.timecompleted)).filter(models.Task.user.in_(listoffriends)).filter_by(hashtag=hashtag).limit(maxResults).all():
