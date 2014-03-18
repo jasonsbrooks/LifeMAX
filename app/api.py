@@ -467,7 +467,7 @@ def updateTask(userId):
 			return "Error: Access Denied"
 		taskid=request.get_json().get('taskId',None)
 		task=models.Task.query.get(taskid)
-		if (task.user.id!=userId):
+		if (task.user!=userId):
 			return "Error: Access Denied"
 		name=request.get_json().get('name',None)
 		description=request.get_json().get('description',None)
