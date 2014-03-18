@@ -578,6 +578,7 @@ def md5sum(file):
 
 @app.route('/api/user/<int:userId>/photoupload', methods = ['POST'])
 def photoupload(userid):
+	return jsonify(imageurl='http://twistedsifter.files.wordpress.com/2013/03/lightning-rainbow-perfect-timing.jpg', success=True)
 	hashToken=request.form.get('hashToken')
 	userToken=models.User.query.get(userId).md5token
 	if (hashToken!=userToken):
