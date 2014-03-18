@@ -460,7 +460,7 @@ def addTimelessTask(userId):
 @app.route('/api/user/<int:userId>/updatetask', methods = ['POST'])
 def updateTask(userId):
 	try:
-		hashToken=request.args.get('hashToken',None)
+		hashToken=request.get_json().get('hashToken')
 		user=models.User.query.get(userId)
 		userToken=user.md5token
 		if (hashToken!=userToken):
