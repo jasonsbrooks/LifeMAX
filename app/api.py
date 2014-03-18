@@ -576,7 +576,7 @@ def md5sum(file):
             d.update(buf)
     return d.hexdigest()
 
-@app.route('/api/user/<int:userid>/photoupload', methods = ['POST'])
+@app.route('/api/user/<int:userId>/photoupload', methods = ['POST'])
 def photoupload(userid):
 	hashToken=request.form.get('hashToken')
 	userToken=models.User.query.get(userId).md5token
@@ -589,5 +589,5 @@ def photoupload(userid):
 		file.save(os.path.join('/photos/', filename))
         models.User.query.get(userId).pictureurl=filename
         db.session.commit()
-        return filename
-	return False
+        return jsonify(imageurl=filename, success=True);
+	return jsonify(success=False)
