@@ -464,11 +464,11 @@ def updateTask(userId):
 		user=models.User.query.get(userId)
 		userToken=user.md5token
 		if (hashToken!=userToken):
-			return "Error: Access Denied"
+			return "HASH TOKEN Error: Access Denied"
 		taskid=request.get_json().get('id',None)
 		task=models.Task.query.get(taskid)
 		if (task.user!=userId):
-			return "Error: Access Denied"
+			return "TASK MATCH Error: Access Denied"
 		name=request.get_json().get('name',None)
 		description=request.get_json().get('description',None)
 		location=request.get_json().get('location',None)
