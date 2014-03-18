@@ -465,7 +465,7 @@ def updateTask(userId):
 		userToken=user.md5token
 		if (hashToken!=userToken):
 			return "Error: Access Denied"
-		taskid=request.get_json().get('taskId',None)
+		taskid=request.get_json().get('id',None)
 		task=models.Task.query.get(taskid)
 		if (task.user!=userId):
 			return "Error: Access Denied"
