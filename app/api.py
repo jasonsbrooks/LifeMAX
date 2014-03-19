@@ -26,13 +26,21 @@ AWS_ACCESS_KEY_ID = os.environ['AWS_ACCESS_KEY_ID']
 AWS_SECRET_ACCESS_KEY = os.environ['AWS_SECRET_ACCESS_KEY']
 true=True
 
+class DateEncoder(json.JSONEncoder):
+    def default(self, obj):
+        if hasattr(obj, 'isoformat'):
+            return obj.isoformat()
+        else:
+            return str(obj)
+        return json.JSONEncoder.default(self, obj)
+
 def createTaskJSON(task):
 	u = models.User.query.get(task.user)
 	userJSON = {'id' : u.id, 'name' : u.name, 'fbid': u.fbid}
 	if task.timecompleted is None:
 		tc = None
 	else:
-		tc = '/Date(' + task.timecompleted.strftime('%s') + ')/'
+		tc = json.dumps(task.timecompleted, cls=DateEncoder)
 	completeJSON = {'id':task.id, 'user':userJSON, 'name': task.name, 'hashtag': task.hashtag, 'pictureurl': task.pictureurl, 'private': task.private, 'completed': task.completed, 'timecompleted': tc}
 	return completeJSON
 
