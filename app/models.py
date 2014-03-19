@@ -1,11 +1,16 @@
 from app import db
-class LifeMaxIds(db.Model):
+import datetime
+
+class TimestampMixin(object):
+    created_at = db.Column(db.DateTime, default=datetime.datetime.now())
+
+class LifeMaxIds(TimestampMixin, db.Model):
 	__tablename__="LifeMaxIds"
 	id = db.Column(db.Integer, primary_key = True)
 	#gtoken = db.Column(db.String(100),nullable=True)
 	#grtoken = db.Column(db.String(100),nullable=True)
 	#lastupdatedtoken = db.Column(db.Integer)
-class User(db.Model):
+class User(TimestampMixin, db.Model):
 	__tablename__="User"
 	id = db.Column(db.Integer, primary_key = True)
 	name = db.Column(db.String(100))
@@ -34,7 +39,7 @@ class TaskList(db.Model):
 	taskinfinitives = db.relationship = db.relationship('TaskInfinitives', backref = 'list', lazy = 'dynamic', primaryjoin="TaskInfinitives.tasklist==TaskList.id" )
 	name = db.Column(db.String(50))
 """
-class Task(db.Model):
+class Task(TimestampMixin, db.Model):
 	__tablename__="Task"
 	id = db.Column(db.Integer, primary_key = True)
 	user = db.Column(db.Integer, db.ForeignKey('User.id'))
@@ -67,7 +72,7 @@ class TaskInfinitives(db.Model):
 	repeat_weekday=db.Column(db.Integer)
 	photo = db.Column(db.String(200))
 """	
-class Friends(db.Model):
+class Friends(TimestampMixin, db.Model):
 	__tablename__="Friends"
 	id = db.Column(db.Integer, primary_key = True)
 	userid = db.Column(db.Integer, db.ForeignKey('User.id'))
