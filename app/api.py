@@ -55,7 +55,6 @@ def register():
 	try:
 		# shortToken=request.form['shortToken']
 		shortToken=request.get_json().get('shortToken')
-		print shortToken
 		r=requests.get('https://graph.facebook.com/oauth/access_token?grant_type=fb_exchange_token&client_id='+FACEBOOK_CLIENT_ID+'&client_secret='+FACEBOOK_CLIENT_SECRET+'&fb_exchange_token='+shortToken)
 		try:
 			longToken=parse_qs(r.text)['access_token'][0]

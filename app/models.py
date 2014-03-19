@@ -1,5 +1,6 @@
 from app import db
 import datetime
+import time
 
 class TimestampMixin(object):
     created_at = db.Column(db.DateTime, default=datetime.datetime.now())
@@ -29,52 +30,22 @@ class User(TimestampMixin, db.Model):
 	def __repr__(self):
 		return '#%d: Name: %s, ProfilePic: %s, FBID: %s, Privacy: %d' % (self.id, self.name, self.profilepic, self.fbid, self.privacy)
 
-"""
-class TaskList(db.Model):
-	https://www.facebook.com/connect/login_success.html#access_token=CAAIAKRek2qMBABA2zXOes2QTGD6EBiRKPOZBZAfwE51u6EVqWZCG1pqw2DIBPFGlyCnXYli0kkWrQMkAzhYclte0sAs5u8Glp5PCDTL40YykXjSxMlRqXUOpvAjfQReZA3ZBllWOUY05Hft6iqjQNOtaMdm8cF3Seb3zFyZCDKzR0yoZBw37KHLChyZBGbWgy69VHfdx6sAS7QZDZD&expires_in=5071
-	__tablename__="TaskList"
-	id = db.Column(db.Integer, primary_key = True)
-	user = db.Column(db.Integer, db.ForeignKey('User.id'))
-	tasks = db.relationship('Task', backref = 'list', lazy = 'dynamic', primaryjoin="Task.tasklist==TaskList.id")
-	taskinfinitives = db.relationship = db.relationship('TaskInfinitives', backref = 'list', lazy = 'dynamic', primaryjoin="TaskInfinitives.tasklist==TaskList.id" )
-	name = db.Column(db.String(50))
-"""
 class Task(TimestampMixin, db.Model):
 	__tablename__="Task"
 	id = db.Column(db.Integer, primary_key = True)
 	user = db.Column(db.Integer, db.ForeignKey('User.id'))
 	name = db.Column(db.String(50))
 	hashtag = db.Column(db.String(50))
-	description = db.Column(db.String(1200))
-	location = db.Column(db.String(50))
+	# description = db.Column(db.String(1200))
+	# location = db.Column(db.String(50))
 	pictureurl = db.Column(db.String(200))
-	completion = db.Column(db.Boolean)
-	timecompleted = db.Column(db.Integer, nullable=True, index = True)
+	# completion = db.Column(db.Boolean)
+	private = db.Column(db.Boolean, default = False)
+	timecompleted = db.Column(db.DateTime, default=None)
 
 	def __repr__(self):
-		return '#%d' %(self.id)
+		return '#%d, User: %d, Name: %s, Hashtag: %s, PictureURL: %s, Privacy: %d, Time Completed: %s' %(self.id, self.user, self.name, self.hashtag, self.pictureurl, self.private, self.timecompleted)
 
-	# def __repr__(self):
-	# 	return '#%d: User: %d, Name: %s, Hashtag: %s, Description: %s, Location: %s, PictureURL: %s, Completion: %d' % (self.id, self.name, self.profilepic, self.fbid, self.privacy)
-
-"""
-class TaskInfinitives(db.Model):
-	__tablename__="TaskInfinitives"
-	id = db.Column(db.Integer, primary_key = True)
-	user = db.Column(db.Integer, db.ForeignKey('User.id'))
-	name = db.Column(db.String(50))
-	tasklist = db.Column(db.Integer, db.ForeignKey('TaskList.id'))
-	description = db.Column(db.String(1200))
-	location = db.Column(db.String(250))
-	starttime = db.Column(db.String(20))
-	endtime = db.Column(db.String(20))
-	repeat_year=db.Column(db.Integer)
-	repeat_month=db.Column(db.Integer)
-	repeat_day=db.Column(db.Integer)
-	repeat_week=db.Column(db.Integer)
-	repeat_weekday=db.Column(db.Integer)
-	photo = db.Column(db.String(200))
-"""	
 class Friends(TimestampMixin, db.Model):
 	__tablename__="Friends"
 	id = db.Column(db.Integer, primary_key = True)
