@@ -117,6 +117,16 @@ def privacychange(userid):
 		print str(traceback.format_exception(*sys.exc_info()))
 		return str(traceback.format_exception(*sys.exc_info()))
 
+@app.route('/api/hashtags', methods = ['GET'])
+def gethashtags():
+	listofhashtags = ['#day2dayhappiness', '#newhavenbars', '#yalebucketlist', '#yalehookups', '#fitness', '#yalesports', '#newhavenoutdoors', '#entertainment', '#yaleculture']
+	return jsonify(listofhashtags)
+
+@app.route('/api/imageforhashtag', methods=['GET'])
+def imageforhashtag():
+	hashtag = request.args.get('hashtag')
+	response = {'imageurl' : 'http://twistedsifter.files.wordpress.com/2013/03/diver-whale-high-five-perfect-timing.jpg', 'hashtag' : hashtag}
+	return jsonify(response)
 
 @app.route('/api/login', methods = ['GET'])
 def login():
