@@ -15,9 +15,9 @@ import sys, traceback
 from sqlalchemy import desc
 import boto
 from boto.s3.key import Key
-from werkzeug.utils import secure_filename
 import time
 import os
+import hashlib
 
 FACEBOOK_CLIENT_ID='670660326330598'
 FACEBOOK_CLIENT_SECRET='0ec602b31b2220aaafc41043b699abcf'
@@ -592,15 +592,14 @@ def photoupload(userId):
 		if (hashToken!=userToken):
 			return "Error: Access Denied"
 		file = request.files['photo']
-		filename = secure_filename(file.filename)
 		conn = boto.connect_s3(AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY)
 		bucket = conn.get_bucket('lifemax')
 		k = Key(bucket)
-		k.key =  str(userId) + '-' + str(time.time()).replace('.', '-') + '-' + filename
+		k.key =  hashlib.sha224(file.read()).hexdigest() + '.jpg'
+		file.seek(0)
 		k.set_contents_from_string(file.read())
 		k.make_public()
 		url = k.generate_url(expires_in=0, query_auth=False)
-		print url
 		return jsonify(imageurl=url, sucess=True)
 	except:
 		return str(traceback.format_exception(*sys.exc_info()))
