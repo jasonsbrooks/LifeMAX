@@ -26,14 +26,24 @@ AWS_ACCESS_KEY_ID = os.environ['AWS_ACCESS_KEY_ID']
 AWS_SECRET_ACCESS_KEY = os.environ['AWS_SECRET_ACCESS_KEY']
 true=True
 
+class DateEncoder(json.JSONEncoder):
+    def default(self, obj):
+        if hasattr(obj, 'isoformat'):
+            return obj.isoformat()
+        else:
+            return str(obj)
+        return json.JSONEncoder.default(self, obj)
+
 def createTaskJSON(task):
 	u = models.User.query.get(task.user)
 	userJSON = {'id' : u.id, 'name' : u.name, 'fbid': u.fbid}
 	if task.timecompleted is None:
 		tc = None
 	else:
-		tc = '/Date(' + task.timecompleted.strftime('%s') + ')/'
-	completeJSON = {'id':task.id, 'user':userJSON, 'name': task.name, 'hashtag': task.hashtag, 'pictureurl': task.pictureurl, 'private': task.private, 'completed': task.completed, 'timecompleted': tc, 'timeadded': '/Date(' + task.created_at.strftime('%s') + ')/'}
+		tmp_time = task.timecompleted
+		tmp_time.replace(second=0, microsecond=0)
+		tc = json.dumps(tmp_time, cls=DateEncoder)
+	completeJSON = {'id':task.id, 'user':userJSON, 'name': task.name, 'hashtag': task.hashtag, 'pictureurl': task.pictureurl, 'private': task.private, 'completed': task.completed, 'timecompleted': tc}
 	return completeJSON
 
 @app.route('/api/fbcallback', methods = ['GET'])
