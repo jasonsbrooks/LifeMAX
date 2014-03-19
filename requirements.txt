@@ -16,4 +16,3 @@ wsgiref==0.1.2
 gunicorn==0.17.2
 psycopg2==2.5
 boto
-coaster=0.4.1
