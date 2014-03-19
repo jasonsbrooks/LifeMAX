@@ -15,7 +15,6 @@ import sys, traceback
 from sqlalchemy import desc
 import boto
 from boto.s3.key import Key
-import time
 import os
 import hashlib
 
@@ -26,6 +25,13 @@ GOOGLE_CLIENT_SECRET='XXXXXXXXX'
 AWS_ACCESS_KEY_ID = os.environ['AWS_ACCESS_KEY_ID']
 AWS_SECRET_ACCESS_KEY = os.environ['AWS_SECRET_ACCESS_KEY']
 true=True
+
+def createTaskJSON(task):
+	u = models.User.query.get(task.user)
+	userJSON = {'id' : u.id, 'name' : u.name, 'fbid': u.fbid}
+	completeJSON = {'id':task.id, 'user':userJSON, 'name': task.name, 'hashtag': task.hashtag, 'pictureurl': task.pictureurl, 'private': task.private, 'completed': task.completed, 'timecompleted': '/Date(' + task.timecompleted.strftime('%s') + ')/'}
+	return jsonify(completeJSON)
+
 @app.route('/api/fbcallback', methods = ['GET'])
 def verify():
 	challenge=0
@@ -147,31 +153,23 @@ def newsfeed(userid):
 		if (hashtag == None and friendId == None):
 			# for task in models.Task.query.filter_by(completion=True).order_by(desc(models.Task.timecompleted)).filter(models.Task.user.in_(listoffriends)).limit(maxResults).all():
 			for task in models.Task.query.order_by(desc(models.Task.timecompleted)).filter(models.Task.user.in_(listoffriends)).limit(maxResults).all():
-				u = models.User.query.get(task.user)
-				userJSON = {'id' : u.id, 'name' : u.name}
-				returndict['items'].append({'id':task.id, 'user':userJSON,'hashtag':task.hashtag,'profilepic':u.profilepic,'name':task.name, 'description':task.description,'location':task.location, 'pictureurl':task.pictureurl, 'completion':task.completion})		
+				returndict['items'].append(createTaskJSON(task))		
 			return jsonify(returndict)
 		elif (hashtag != None and friendId == None):
 			for task in models.Task.query.filter_by(completion=True).order_by(desc(models.Task.timecompleted)).filter(models.Task.user.in_(listoffriends)).filter_by(hashtag=hashtag).limit(maxResults).all():
-				u = models.User.query.get(task.user)
-				userJSON = {'id' : u.id, 'name' : u.name}
-				returndict['items'].append({'id':task.id, 'user':userJSON,'hashtag':task.hashtag,'profilepic':u.profilepic,'name':task.name, 'description':task.description,'location':task.location, 'pictureurl':task.pictureurl, 'completion':task.completion})
+				returndict['items'].append(createTaskJSON(task))
 			return jsonify(returndict)
 		elif (hashtag == None and friendId != None):
 			if ((models.User.query.get(friendId) not in models.User.get(userid).friends) or models.User.query.get(friendId).privacy==1):
 				return "Error: Access Denied"
 			for task in models.Task.query.filter_by(completion=True).order_by(desc(models.Task.timecompleted)).filter_by(user=friendId).limit(maxResults).all():
-				u = models.User.query.get(task.user)
-				userJSON = {'id' : u.id, 'name' : u.name}
-				returndict['items'].append({'id':task.id, 'user':userJSON,'hashtag':task.hashtag,'profilepic':u.profilepic,'name':task.name, 'description':task.description,'location':task.location, 'pictureurl':task.pictureurl, 'completion':task.completion})
+				returndict['items'].append(createTaskJSON(task))
 			return jsonify(returndict)
 		elif (hashtag != None and friendId != None):
 			if ((models.User.query.get(friendId) not in models.User.get(userid).friends) or models.User.query.get(friendId).privacy==1):
 				return "Error: Access Denied"
 			for task in models.Task.query.filter_by(completion=True).order_by(desc(models.Task.timecompleted)).filter_by(user=friendId).filter_by(hashtag=hashtag).limit(maxResults).all():
-				u = models.User.query.get(task.user)
-				userJSON = {'id' : u.id, 'name' : u.name}
-				returndict['items'].append({'id':task.id, 'user':userJSON,'hashtag':task.hashtag,'profilepic':u.profilepic,'name':task.name, 'description':task.description,'location':task.location, 'pictureurl':task.pictureurl, 'completion':task.completion})
+				returndict['items'].append(createTaskJSON(task))
 			return jsonify(returndict)
 
 	except:
@@ -185,14 +183,13 @@ def addTimelessTask2(userId):
 		if (hashToken!=userToken):
 			return "Error: Access Denied"
 		name=request.get_json().get('name')
-		description=request.get_json().get('description')
-		location=request.get_json().get('location')
-		pictureurl=request.get_json().get('pictureurl')
+		pictureurl=request.get_json().get('pictureurl', None)
 		hashtag=request.get_json().get('hashtag')
-		newTask=models.Task(user=userId, name=name, description=description, hashtag=hashtag, location=location, pictureurl=pictureurl, completion=False)
+		private=request.get_json().get('private')
+		newTask=models.Task(user=userId, name=name, hashtag=hashtag, pictureurl=pictureurl, private=private)
 		db.session.add(newTask)
 		db.session.commit()
-		return jsonify(success=True,taskID=newTask.id)
+		return createTaskJSON(newTask)
 	except:
 		return str(traceback.format_exception(*sys.exc_info()))
 
@@ -205,10 +202,7 @@ def getTimelessTasks2(userId):
 			return "Error: Access Denied"
 		returndict={'items':[]}
 		for task in models.Task.query.filter(models.Task.user == userId).all():
-			u = models.User.query.get(task.user)
-			userJSON = {'id' : u.id, 'name' : u.name}
-			returndict['items'].append({'id':task.id, 'user':userJSON,'hashtag':task.hashtag, 'profilepic':u.profilepic,'name':task.name, 'description':task.description,'location':task.location, 'pictureurl':task.pictureurl, 'completion':task.completion})		
-		
+			returndict['items'].append(createTaskJSON(task))		
 		return jsonify(returndict)
 	except:
 		return str(traceback.format_exception(*sys.exc_info()))
@@ -246,32 +240,29 @@ def updateTask(userId):
 		if (task.user!=userId):
 			return "TASK MATCH Error: Access Denied. Task User: %d, User ID: %d" %(task.user, userID)
 		name=request.get_json().get('name',None)
-		description=request.get_json().get('description',None)
-		location=request.get_json().get('location',None)
 		pictureurl=request.get_json().get('pictureurl',None)
 		hashtag=request.get_json().get('hashtag',None)
-		completion=request.get_json().get('completion',None)
+		private=request.get_json().get('private',None)
+		completed=request.get_json().get('completion',None)
 		if (name!=None):
 			task.name=name
-		if (description!=None):
-			task.description=description
-		if (location!=None):
-			task.location=location
 		if (pictureurl!=None):
 			task.pictureurl=pictureurl
 		if (hashtag!=None):
 			task.hashtag=hashtag
-		if (completion=='True'):
-			task.completion=True
-			task.timecompleted=int(time.time())
-		elif (completion=='False'):
-			task.completion=False
+		if (private!=None):
+			task.private=private
+		if (completed==0):
+			task.completed=completed
 			task.timecompleted=None
+		elif (completed==1):
+			if (task.completed == 0):
+				task.completed = 1
+				task.timecompleted = datetime.datetime.now()
 		db.session.commit()
-		return jsonify(name=task.name,description=task.description,location=task.location,pictureurl=task.pictureurl,hashtag=task.hashtag,completion=task.completion)
+		return createTaskJSON(task)
 	except:
 		return str(traceback.format_exception(*sys.exc_info()))
-
 
 def allowed_file(filename):
     return '.' in filename and \

@@ -41,6 +41,7 @@ class Task(TimestampMixin, db.Model):
 	pictureurl = db.Column(db.String(200))
 	# completion = db.Column(db.Boolean)
 	private = db.Column(db.Boolean, default = False)
+	completed = db.Column(db.Boolean, default = False)
 	timecompleted = db.Column(db.DateTime, default=None)
 
 	def __repr__(self):
