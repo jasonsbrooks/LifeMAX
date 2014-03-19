@@ -268,7 +268,7 @@ def updateTask(userId):
 			task.timecompleted=None
 		elif (completed==1):
 			if (task.completed == 0):
-				task.completed = 1
+				task.completed = completed
 				task.timecompleted = datetime.datetime.now()
 		db.session.commit()
 		return jsonify(createTaskJSON(task))
@@ -308,3 +308,6 @@ def photoupload(userId):
 	except:
 		print str(traceback.format_exception(*sys.exc_info()))
 		return str(traceback.format_exception(*sys.exc_info()))
+
+
+
