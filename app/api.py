@@ -173,19 +173,19 @@ def newsfeed(userid):
 				returndict['items'].append(createTaskJSON(task))		
 			return jsonify(returndict)
 		elif (hashtag != None and friendId == None):
-			for task in models.Task.query.filter_by(completion=True).order_by(desc(models.Task.timecompleted)).filter(models.Task.user.in_(listoffriends)).filter_by(hashtag=hashtag).limit(maxResults).all():
+			for task in models.Task.query.filter_by(completed=True).order_by(desc(models.Task.timecompleted)).filter(models.Task.user.in_(listoffriends)).filter_by(hashtag=hashtag).limit(maxResults).all():
 				returndict['items'].append(createTaskJSON(task))
 			return jsonify(returndict)
 		elif (hashtag == None and friendId != None):
 			if ((models.User.query.get(friendId) not in models.User.get(userid).friends) or models.User.query.get(friendId).privacy==1):
 				return "Error: Access Denied"
-			for task in models.Task.query.filter_by(completion=True).order_by(desc(models.Task.timecompleted)).filter_by(user=friendId).limit(maxResults).all():
+			for task in models.Task.query.filter_by(completed=True).order_by(desc(models.Task.timecompleted)).filter_by(user=friendId).limit(maxResults).all():
 				returndict['items'].append(createTaskJSON(task))
 			return jsonify(returndict)
 		elif (hashtag != None and friendId != None):
 			if ((models.User.query.get(friendId) not in models.User.get(userid).friends) or models.User.query.get(friendId).privacy==1):
 				return "Error: Access Denied"
-			for task in models.Task.query.filter_by(completion=True).order_by(desc(models.Task.timecompleted)).filter_by(user=friendId).filter_by(hashtag=hashtag).limit(maxResults).all():
+			for task in models.Task.query.filter_by(completed=True).order_by(desc(models.Task.timecompleted)).filter_by(user=friendId).filter_by(hashtag=hashtag).limit(maxResults).all():
 				returndict['items'].append(createTaskJSON(task))
 			return jsonify(returndict)
 
@@ -264,7 +264,7 @@ def updateTask(userId):
 		pictureurl=request.get_json().get('pictureurl',None)
 		hashtag=request.get_json().get('hashtag',None)
 		private=request.get_json().get('private',None)
-		completed=request.get_json().get('completion',None)
+		completed=request.get_json().get('completed',None)
 		if (name!=None):
 			task.name=name
 		if (pictureurl!=None):
