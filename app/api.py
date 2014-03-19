@@ -120,7 +120,7 @@ def privacychange(userid):
 @app.route('/api/hashtags', methods = ['GET'])
 def gethashtags():
 	listofhashtags = ['#day2dayhappiness', '#newhavenbars', '#yalebucketlist', '#yalehookups', '#fitness', '#yalesports', '#newhavenoutdoors', '#entertainment', '#yaleculture']
-	return jsonify(listofhashtags)
+	return jsonify(hashtags=listofhashtags)
 
 @app.route('/api/imageforhashtag', methods=['GET'])
 def imageforhashtag():
