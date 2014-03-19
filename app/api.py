@@ -601,6 +601,6 @@ def photoupload(userId):
 		k.make_public()
 		url = k.generate_url(expires_in=0, query_auth=False)
 		print url
-		return jsonify(imageurl=url, sucess=True)
+		return jsonify(imageurl=url, success=True)
 	except:
 		return str(traceback.format_exception(*sys.exc_info()))
