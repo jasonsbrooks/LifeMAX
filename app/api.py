@@ -13,10 +13,18 @@ import ast
 import json
 import sys, traceback
 from sqlalchemy import desc
+import boto
+from boto.s3.key import Key
+from werkzeug.utils import secure_filename
+import time
+import os
+
 FACEBOOK_CLIENT_ID='670660326330598'
 FACEBOOK_CLIENT_SECRET='0ec602b31b2220aaafc41043b699abcf'
 GOOGLE_CLIENT_ID='XXXXXX'
 GOOGLE_CLIENT_SECRET='XXXXXXXXX'
+AWS_ACCESS_KEY_ID = os.environ['AWS_ACCESS_KEY_ID']
+AWS_SECRET_ACCESS_KEY = os.environ['AWS_SECRET_ACCESS_KEY']
 true=True
 @app.route('/api/fbcallback', methods = ['GET'])
 def verify():
@@ -577,18 +585,22 @@ def md5sum(file):
     return d.hexdigest()
 
 @app.route('/api/user/<int:userId>/photoupload', methods = ['POST'])
-def photoupload(userid):
-	return jsonify(imageurl='http://twistedsifter.files.wordpress.com/2013/03/lightning-rainbow-perfect-timing.jpg', success=True)
-	hashToken=request.form.get('hashToken')
-	userToken=models.User.query.get(userId).md5token
-	if (hashToken!=userToken):
-		return "Error: Access Denied"
-	file = request.files['file']
-	sum=md5sum(file)
-	if file and allowed_file(sum):
-		filename = secure_filename(sum)
-		file.save(os.path.join('/photos/', filename))
-        models.User.query.get(userId).pictureurl=filename
-        db.session.commit()
-        return jsonify(imageurl=filename, success=True);
-	return jsonify(success=False)
+def photoupload(userId):
+	try:
+		hashToken=request.form.get('hashToken')
+		userToken=models.User.query.get(userId).md5token
+		if (hashToken!=userToken):
+			return "Error: Access Denied"
+		file = request.files['photo']
+		filename = secure_filename(file.filename)
+		conn = boto.connect_s3(AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY)
+		bucket = conn.get_bucket('lifemax')
+		k = Key(bucket)
+		k.key =  str(userId) + '-' + str(time.time()).replace('.', '-') + '-' + filename
+		k.set_contents_from_string(file.read())
+		k.make_public()
+		url = k.generate_url(expires_in=0, query_auth=False)
+		print url
+		return jsonify(imageurl=url, sucess=True)
+	except:
+		return str(traceback.format_exception(*sys.exc_info()))
