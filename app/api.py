@@ -33,7 +33,7 @@ def createTaskJSON(task):
 		tc = None
 	else:
 		tc = '/Date(' + task.timecompleted.strftime('%s') + ')/'
-	completeJSON = {'id':task.id, 'user':userJSON, 'name': task.name, 'hashtag': task.hashtag, 'pictureurl': task.pictureurl, 'private': task.private, 'completed': task.completed, 'timecompleted': tc}
+	completeJSON = {'id':task.id, 'user':userJSON, 'name': task.name, 'hashtag': task.hashtag, 'pictureurl': task.pictureurl, 'private': task.private, 'completed': task.completed, 'timecompleted': tc, 'timeadded': '/Date(' + task.created_at.strftime('%s') + ')/'}
 	return completeJSON
 
 @app.route('/api/fbcallback', methods = ['GET'])
@@ -125,7 +125,8 @@ def gethashtags():
 @app.route('/api/imageforhashtag', methods=['GET'])
 def imageforhashtag():
 	hashtag = request.args.get('hashtag')
-	response = {'imageurl' : 'http://twistedsifter.files.wordpress.com/2013/03/diver-whale-high-five-perfect-timing.jpg', 'hashtag' : hashtag}
+	imageDict = {'#day2dayhappiness':'http://lorempixel.com/400/200/sports/1', '#newhavenbars':'http://lorempixel.com/400/200/sports/1', '#yalebucketlist':'http://lorempixel.com/400/200/sports/1', '#yalehookups':'http://lorempixel.com/400/200/sports/1', '#fitness':'http://lorempixel.com/400/200/sports/1', '#yalesports':'http://lorempixel.com/400/200/sports/1', '#newhavenoutdoors':'http://lorempixel.com/400/200/sports/1', '#entertainment':'http://lorempixel.com/400/200/sports/1', '#yaleculture'}
+	response = {'imageurl' : imageDict[hashtag], 'hashtag' : hashtag}
 	return jsonify(response)
 
 @app.route('/api/login', methods = ['GET'])

@@ -30,6 +30,8 @@ class User(TimestampMixin, db.Model):
 	def __repr__(self):
 		return '#%d: Name: %s, ProfilePic: %s, FBID: %s, Privacy: %d' % (self.id, self.name, self.profilepic, self.fbid, self.privacy)
 
+
+
 class Task(TimestampMixin, db.Model):
 	__tablename__="Task"
 	id = db.Column(db.Integer, primary_key = True)
