@@ -34,7 +34,7 @@ def createTaskJSON(task):
 	else:
 		tc = '/Date(' + task.timecompleted.strftime('%s') + ')/'
 	completeJSON = {'id':task.id, 'user':userJSON, 'name': task.name, 'hashtag': task.hashtag, 'pictureurl': task.pictureurl, 'private': task.private, 'completed': task.completed, 'timecompleted': tc}
-	return jsonify(completeJSON)
+	return completeJSON
 
 @app.route('/api/fbcallback', methods = ['GET'])
 def verify():
@@ -193,7 +193,7 @@ def addTimelessTask2(userId):
 		newTask=models.Task(user=userId, name=name, hashtag=hashtag, pictureurl=pictureurl, private=private)
 		db.session.add(newTask)
 		db.session.commit()
-		return createTaskJSON(newTask)
+		return jsonify(createTaskJSON(newTask))
 	except:
 		return str(traceback.format_exception(*sys.exc_info()))
 
@@ -264,7 +264,7 @@ def updateTask(userId):
 				task.completed = 1
 				task.timecompleted = datetime.datetime.now()
 		db.session.commit()
-		return createTaskJSON(task)
+		return jsonify(createTaskJSON(task))
 	except:
 		return str(traceback.format_exception(*sys.exc_info()))
 
