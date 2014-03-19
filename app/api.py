@@ -101,6 +101,7 @@ def register():
 		db.session.commit()
 		return jsonify(authToken=longToken,fbid=lookupid,id=newuser.id)
 	except:
+		print str(traceback.format_exception(*sys.exc_info()))
 		return str(traceback.format_exception(*sys.exc_info()))
 @app.route('/api/<int:userid>/privacychange',methods=['POST'])
 def privacychange(userid):
@@ -113,6 +114,7 @@ def privacychange(userid):
 		models.User.query.get(userid).privacy=privacy
 		db.session.commit()
 	except:
+		print str(traceback.format_exception(*sys.exc_info()))
 		return str(traceback.format_exception(*sys.exc_info()))
 
 
@@ -133,6 +135,7 @@ def login():
 		db.session.commit()
 		return jsonify(authToken=longToken,fbid=lookupid, id=loginuser.id)
 	except:
+		print str(traceback.format_exception(*sys.exc_info()))
 		return str(traceback.format_exception(*sys.exc_info()))
 
 @app.route('/api/user/<int:userid>/newsfeed', methods = ['GET'])
@@ -177,6 +180,7 @@ def newsfeed(userid):
 			return jsonify(returndict)
 
 	except:
+		print str(traceback.format_exception(*sys.exc_info()))
 		return str(traceback.format_exception(*sys.exc_info()))
 
 @app.route('/api/user/<int:userId>/tasks', methods = ['POST'])
@@ -195,6 +199,7 @@ def addTimelessTask2(userId):
 		db.session.commit()
 		return jsonify(createTaskJSON(newTask))
 	except:
+		print str(traceback.format_exception(*sys.exc_info()))
 		return str(traceback.format_exception(*sys.exc_info()))
 
 @app.route('/api/user/<int:userId>/tasks', methods = ['GET'])
@@ -209,6 +214,7 @@ def getTimelessTasks2(userId):
 			returndict['items'].append(createTaskJSON(task))		
 		return jsonify(returndict)
 	except:
+		print str(traceback.format_exception(*sys.exc_info()))
 		return str(traceback.format_exception(*sys.exc_info()))
 
 @app.route('/api/user/<int:userId>/deletetasks', methods = ['POST'])
@@ -229,6 +235,7 @@ def deleteTask(userId):
 		else:
 			return jsonify(success=False)
 	except:
+		print str(traceback.format_exception(*sys.exc_info()))
 		return str(traceback.format_exception(*sys.exc_info()))
 
 @app.route('/api/user/<int:userId>/updatetask', methods = ['POST'])
@@ -266,6 +273,7 @@ def updateTask(userId):
 		db.session.commit()
 		return jsonify(createTaskJSON(task))
 	except:
+		print str(traceback.format_exception(*sys.exc_info()))
 		return str(traceback.format_exception(*sys.exc_info()))
 
 def allowed_file(filename):
@@ -298,4 +306,5 @@ def photoupload(userId):
 		print url
 		return jsonify(imageurl=url, success=True)
 	except:
+		print str(traceback.format_exception(*sys.exc_info()))
 		return str(traceback.format_exception(*sys.exc_info()))
