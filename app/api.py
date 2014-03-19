@@ -600,6 +600,7 @@ def photoupload(userId):
 		k.set_contents_from_string(file.read())
 		k.make_public()
 		url = k.generate_url(expires_in=0, query_auth=False)
+		print url
 		return jsonify(imageurl=url, sucess=True)
 	except:
 		return str(traceback.format_exception(*sys.exc_info()))
