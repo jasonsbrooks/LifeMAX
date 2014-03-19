@@ -29,7 +29,11 @@ true=True
 def createTaskJSON(task):
 	u = models.User.query.get(task.user)
 	userJSON = {'id' : u.id, 'name' : u.name, 'fbid': u.fbid}
-	completeJSON = {'id':task.id, 'user':userJSON, 'name': task.name, 'hashtag': task.hashtag, 'pictureurl': task.pictureurl, 'private': task.private, 'completed': task.completed, 'timecompleted': '/Date(' + task.timecompleted.strftime('%s') + ')/'}
+	if task.timecompleted is None:
+		tc = None
+	else:
+		tc = '/Date(' + task.timecompleted.strftime('%s') + ')/'
+	completeJSON = {'id':task.id, 'user':userJSON, 'name': task.name, 'hashtag': task.hashtag, 'pictureurl': task.pictureurl, 'private': task.private, 'completed': task.completed, 'timecompleted': tc}
 	return jsonify(completeJSON)
 
 @app.route('/api/fbcallback', methods = ['GET'])
