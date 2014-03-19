@@ -40,7 +40,9 @@ def createTaskJSON(task):
 	if task.timecompleted is None:
 		tc = None
 	else:
-		tc = json.dumps(task.timecompleted, cls=DateEncoder)
+		tmp_time = task.timecompleted
+		tmp_time.replace(second=0, microsecond=0)
+		tc = json.dumps(tmp_time, cls=DateEncoder)
 	completeJSON = {'id':task.id, 'user':userJSON, 'name': task.name, 'hashtag': task.hashtag, 'pictureurl': task.pictureurl, 'private': task.private, 'completed': task.completed, 'timecompleted': tc}
 	return completeJSON
 
