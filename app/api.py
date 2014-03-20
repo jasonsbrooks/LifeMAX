@@ -49,7 +49,7 @@ def randomTask():
 			return
 	ht = random.choice(defaultTasks.keys())
 	taskName = random.choice(defaultTasks[ht])
-	task = models.Task(user=0, name=taskName, hashtag=ht, completed=True, timecompleted=datetime.datetime.utcnow())
+	task = models.Task(user=0, name=taskName, hashtag=ht, completed=True, timecompleted=datetime.datetime.utcnow(), created_at=datetime.datetime.utcnow())
 	db.session.add(task)
 	db.session.commit()
 
@@ -249,7 +249,7 @@ def addTimelessTask2(userId):
 		pictureurl=request.get_json().get('pictureurl', None)
 		hashtag=request.get_json().get('hashtag')
 		private=request.get_json().get('private')
-		newTask=models.Task(user=userId, name=name, hashtag=hashtag, pictureurl=pictureurl, private=private)
+		newTask=models.Task(user=userId, name=name, hashtag=hashtag, pictureurl=pictureurl, private=private, created_at=datetime.datetime.utcnow())
 		db.session.add(newTask)
 		db.session.commit()
 		json_resp = jsonify(createTaskJSON(newTask))
