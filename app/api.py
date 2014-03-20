@@ -40,13 +40,12 @@ def createTaskJSON(task):
 	return completeJSON
 
 def randomTask():
-	mostRecent = models.Task.query.filter(models.Task.user == 0).order_by(desc(models.Task.created_at)).first()
+	mostRecent = models.Task.query.filter(models.Task.user == 0).order_by(Task.id.desc()).first()
 	cont = False
 	if mostRecent is not None:
 		a = mostRecent.created_at
 		b = datetime.datetime.now()
-		# if (b-a).total_seconds() < 43200:
-		if (b-a).total_seconds() < 60:
+		if (b-a).total_seconds() < 43200:
 			return
 	ht = random.choice(defaultTasks.keys())
 	taskName = random.choice(defaultTasks[ht])
