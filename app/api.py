@@ -109,7 +109,7 @@ def register():
 			friend=models.User.query.filter_by(fbid=friendid).first()
 			if (friend!=None):
 				newfriend1=models.Friends(userid=newuser.id,friendid=friend.id)
-				newfriend2=models.Friends(userid=friend.id,friendid=user.id)
+				newfriend2=models.Friends(userid=friend.id,friendid=newuser.id)
 
 				db.session.add(newfriend1)
 				db.session.add(newfriend2)
