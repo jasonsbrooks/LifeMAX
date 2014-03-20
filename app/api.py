@@ -18,6 +18,7 @@ from boto.s3.key import Key
 import os
 import hashlib
 from hashtags import defaultTasks, imageAssociations
+import pdb
 
 FACEBOOK_CLIENT_ID='670660326330598'
 FACEBOOK_CLIENT_SECRET='0ec602b31b2220aaafc41043b699abcf'
@@ -124,7 +125,7 @@ def gethashtags():
 
 @app.route('/api/imageforhashtag', methods=['POST'])
 def imageforhashtag():
-	hashtag = request.get_json.get('hashtag')
+	hashtag = request.get_json().get('hashtag')
 	response = {'imageurl' : imageAssociations[hashtag], 'hashtag' : hashtag}
 	return jsonify(response)
 
