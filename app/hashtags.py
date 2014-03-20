@@ -19,7 +19,7 @@ defaultTasks = {
         "Hammertime",
         "The MoonWalk",
         "Hoedown Throwdown",
-        "the Nutbush",
+        "The Nutbush",
         "Waving",
         "California Curls Dance",
         "Thriller",
@@ -100,18 +100,13 @@ defaultTasks = {
     "#drinking": [
         "Cards against humanity",
         "Flip cup",
-        "Rage cage",
         "Win a beer pong game",
         "Ice your friend",
         "Go to Woads",
-        "Take 3 shots in an hour",
         "Shotgun a beer",
         "Funnel a beer",
-        "Take a shot before  seminar",
         "make nice drinks for a night",
         "take tequila and lime shots",
-        "Get drunk and sing Karaoke ",
-        "Throw up at a night club"
     ],
     "#entertainment": [
         "Watch Jaws",
@@ -139,7 +134,7 @@ defaultTasks = {
     "#studyspots": [
         "Do work at Blue State",
         "Do work at Panera",
-        "Do work at B & N Caf\u00e9",
+        "Do work at B & N Cafe",
         "Do work at Sterling ",
         "Do work at Gheav",
         "Study at Sterling Library",
@@ -182,12 +177,6 @@ defaultTasks = {
         "Watch a sketch comedy group",
         "See the Wiffenpooffs perform",
         "Smoke Hooka at Mamoons"
-    ],
-    "#yalehookups": [
-        "hook up in stacks",
-        "Hook up on a roof top",
-        "12 college challenge",
-        "7 year challenge"
     ]
 }
 
@@ -199,7 +188,6 @@ imageAssociations = {'#yalebucketlist':'http://lorempixel.com/400/200/sports/1',
 					'#newhavenoutdoors':'http://lorempixel.com/400/200/sports/1', 
 					'#yaleculture':'http://lorempixel.com/400/200/sports/1', 
 					'#drinking':'http://lorempixel.com/400/200/sports/1', 
-					'#yalehookups':'http://lorempixel.com/400/200/sports/1', 
 					'#day2dayhappiness':'http://lorempixel.com/400/200/sports/1', 
 					'#productivity':'http://lorempixel.com/400/200/sports/1', 
 					'#travel':'http://lorempixel.com/400/200/sports/1', 
