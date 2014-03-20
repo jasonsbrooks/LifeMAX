@@ -181,10 +181,10 @@ defaultTasks = {
 }
 
 imageAssociations = {'#yalebucketlist':'http://lorempixel.com/400/200/sports/1', 
-					'#dancemoves':'http://lorempixel.com/400/200/sports/1', 
-					'#growth':'http://lorempixel.com/400/200/sports/1', 
-					'#yalesports':'http://lorempixel.com/400/200/sports/1', 
-					'#newhavenbars':'http://lorempixel.com/400/200/sports/1', 
+					'#dancemoves':'http://cf.ltkcdn.net/dance/images/std/53712-419x286-FreeUrbanDanceMoves.jpg', 
+					'#growth':'http://www.jaimesoriano.net/wp-content/uploads/2010/07/personal-growth1.jpg', 
+					'#yalesports':'http://sportzedgect.s3.amazonaws.com/wp-content/uploads/2013/06/Yale-hockey1.jpg', 
+					'#newhavenbars':'http://c.o0bg.com/rf/image_r/Boston/2011-2020/2012/11/09/BostonGlobe.com/National/Images/HVDYALE09[1]2-721.jpg', 
 					'#newhavenoutdoors':'http://lorempixel.com/400/200/sports/1', 
 					'#yaleculture':'http://lorempixel.com/400/200/sports/1', 
 					'#drinking':'http://lorempixel.com/400/200/sports/1', 
