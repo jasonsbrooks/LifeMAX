@@ -17,6 +17,7 @@ import boto
 from boto.s3.key import Key
 import os
 import hashlib
+from hashtags import defaultTasks, imageAssociations
 
 FACEBOOK_CLIENT_ID='670660326330598'
 FACEBOOK_CLIENT_SECRET='0ec602b31b2220aaafc41043b699abcf'
@@ -119,8 +120,7 @@ def privacychange(userid):
 
 @app.route('/api/hashtags', methods = ['GET'])
 def gethashtags():
-	listofhashtags = ['#day2dayhappiness', '#newhavenbars', '#yalebucketlist', '#yalehookups', '#fitness', '#yalesports', '#newhavenoutdoors', '#entertainment', '#yaleculture']
-	return jsonify(hashtags=listofhashtags)
+	return jsonify(hashtags=defaultTasks.keys())
 
 @app.route('/api/imageforhashtag', methods=['GET'])
 def imageforhashtag():
@@ -189,7 +189,6 @@ def newsfeed(userid):
 			for task in models.Task.query.filter_by(completed=True).order_by(desc(models.Task.timecompleted)).filter_by(user=friendId).filter_by(hashtag=hashtag).limit(maxResults).all():
 				returndict['items'].append(createTaskJSON(task))
 			return jsonify(returndict)
-
 	except:
 		print str(traceback.format_exception(*sys.exc_info()))
 		return str(traceback.format_exception(*sys.exc_info()))
