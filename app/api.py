@@ -122,11 +122,10 @@ def privacychange(userid):
 def gethashtags():
 	return jsonify(hashtags=defaultTasks.keys())
 
-@app.route('/api/imageforhashtag', methods=['GET'])
+@app.route('/api/imageforhashtag', methods=['POST'])
 def imageforhashtag():
 	hashtag = request.args.get('hashtag')
-	imageDict = {'#day2dayhappiness':'http://lorempixel.com/400/200/sports/1', '#newhavenbars':'http://lorempixel.com/400/200/sports/1', '#yalebucketlist':'http://lorempixel.com/400/200/sports/1', '#yalehookups':'http://lorempixel.com/400/200/sports/1', '#fitness':'http://lorempixel.com/400/200/sports/1', '#yalesports':'http://lorempixel.com/400/200/sports/1', '#newhavenoutdoors':'http://lorempixel.com/400/200/sports/1', '#entertainment':'http://lorempixel.com/400/200/sports/1', '#yaleculture':'http://lorempixel.com/400/200/sports/1'}
-	response = {'imageurl' : imageDict[hashtag], 'hashtag' : hashtag}
+	response = {'imageurl' : imageAssociations[hashtag], 'hashtag' : hashtag}
 	return jsonify(response)
 
 @app.route('/api/login', methods = ['GET'])
