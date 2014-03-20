@@ -204,25 +204,32 @@ def newsfeed(userid):
 		if (hashtag == None and friendId == None):
 			# for task in models.Task.query.filter_by(completion=True).order_by(desc(models.Task.timecompleted)).filter(models.Task.user.in_(listoffriends)).limit(maxResults).all():
 			for task in models.Task.query.order_by(desc(models.Task.timecompleted)).filter(models.Task.user.in_(listoffriends)).limit(maxResults).all():
-				returndict['items'].append(createTaskJSON(task))		
-			return jsonify(returndict)
+				returndict['items'].append(createTaskJSON(task))
+			json = jsonify(returndict)
+			print json
+			return json
 		elif (hashtag != None and friendId == None):
 			for task in models.Task.query.filter_by(completed=True).order_by(desc(models.Task.timecompleted)).filter(models.Task.user.in_(listoffriends)).filter_by(hashtag=hashtag).limit(maxResults).all():
 				returndict['items'].append(createTaskJSON(task))
-			return jsonify(returndict)
+			json = jsonify(returndict)
+			print json
+			return json
 		elif (hashtag == None and friendId != None):
 			if ((models.User.query.get(friendId) not in models.User.get(userid).friends) or models.User.query.get(friendId).privacy==1):
 				return "Error: Access Denied"
 			for task in models.Task.query.filter_by(completed=True).order_by(desc(models.Task.timecompleted)).filter_by(user=friendId).limit(maxResults).all():
 				returndict['items'].append(createTaskJSON(task))
-			return jsonify(returndict)
+			json = jsonify(returndict)
+			print json
+			return json
 		elif (hashtag != None and friendId != None):
 			if ((models.User.query.get(friendId) not in models.User.get(userid).friends) or models.User.query.get(friendId).privacy==1):
 				return "Error: Access Denied"
 			for task in models.Task.query.filter_by(completed=True).order_by(desc(models.Task.timecompleted)).filter_by(user=friendId).filter_by(hashtag=hashtag).limit(maxResults).all():
 				returndict['items'].append(createTaskJSON(task))
-			return jsonify(returndict)
-	except:
+			json = jsonify(returndict)
+			print json
+			return json	except:
 		print str(traceback.format_exception(*sys.exc_info()))
 		return str(traceback.format_exception(*sys.exc_info()))
 
@@ -232,7 +239,9 @@ def addTimelessTask2(userId):
 		hashToken=request.get_json().get('hashToken')
 		userToken=models.User.query.get(userId).md5token
 		if (hashToken!=userToken):
-			return "Error: Access Denied"
+			resp = "Error: Access Denied"
+			print resp
+			return resp
 		randomTask()
 		name=request.get_json().get('name')
 		pictureurl=request.get_json().get('pictureurl', None)
@@ -241,7 +250,9 @@ def addTimelessTask2(userId):
 		newTask=models.Task(user=userId, name=name, hashtag=hashtag, pictureurl=pictureurl, private=private)
 		db.session.add(newTask)
 		db.session.commit()
-		return jsonify(createTaskJSON(newTask))
+		json = jsonify(createTaskJSON(newTask))
+		print json
+		return json
 	except:
 		print str(traceback.format_exception(*sys.exc_info()))
 		return str(traceback.format_exception(*sys.exc_info()))
