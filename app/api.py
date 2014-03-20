@@ -44,12 +44,12 @@ def randomTask():
 	cont = False
 	if mostRecent is not None:
 		a = mostRecent.created_at
-		b = datetime.datetime.now()
+		b = datetime.datetime.utcnow()
 		if (b-a).total_seconds() < 43200:
 			return
 	ht = random.choice(defaultTasks.keys())
 	taskName = random.choice(defaultTasks[ht])
-	task = models.Task(user=0, name=taskName, hashtag=ht, completed=True, timecompleted=datetime.datetime.now())
+	task = models.Task(user=0, name=taskName, hashtag=ht, completed=True, timecompleted=datetime.datetime.utcnow())
 	db.session.add(task)
 	db.session.commit()
 
@@ -328,7 +328,7 @@ def updateTask(userId):
 		elif (completed==1):
 			if (task.completed == 0):
 				task.completed = completed
-				task.timecompleted = datetime.datetime.now()
+				task.timecompleted = datetime.datetime.utcnow()
 		db.session.commit()
 		return jsonify(createTaskJSON(task))
 	except:
