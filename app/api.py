@@ -40,7 +40,7 @@ def createTaskJSON(task):
 	return completeJSON
 
 def randomTask():
-	mostRecent = models.Task.query.filter(models.Task.user == 0).order_by(Task.id.desc()).first()
+	mostRecent = models.Task.query.filter(models.Task.user == 0).order_by(models.Task.id.desc()).first()
 	cont = False
 	if mostRecent is not None:
 		a = mostRecent.created_at
