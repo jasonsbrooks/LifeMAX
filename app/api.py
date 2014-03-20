@@ -147,7 +147,7 @@ def objectforhashtag(hashtag):
 def gethashtags():
 	try:
 		response = []
-		for hashtag in defaultTasks.key():
+		for hashtag in defaultTasks.keys():
 			response.append(objectforhashtag(hashtag))
 		json = jsonify(hashtags=response)
 		print json
