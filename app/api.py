@@ -19,6 +19,7 @@ import os
 import hashlib
 from hashtags import defaultTasks, imageAssociations
 import pdb
+import random
 
 FACEBOOK_CLIENT_ID='670660326330598'
 FACEBOOK_CLIENT_SECRET='0ec602b31b2220aaafc41043b699abcf'
@@ -37,6 +38,20 @@ def createTaskJSON(task):
 		tc = task.timecompleted.strftime("%Y-%m-%dT%H:%M:%SZ")
 	completeJSON = {'id':task.id, 'user':userJSON, 'name': task.name, 'hashtag': task.hashtag, 'pictureurl': task.pictureurl, 'private': task.private, 'completed': task.completed, 'timecompleted': tc, 'timecreated': task.created_at.strftime("%Y-%m-%dT%H:%M:%SZ")}
 	return completeJSON
+
+def randomTask():
+	mostRecent = models.Task.query.filter(models.Task.user == 0).order_by(desc(models.Task.created_at)).first()
+	cont = False
+	if mostRecent is not None:
+		a = mostRecent.created_at
+		b = datetime.datetime.now()
+		if (b-a).total_seconds() < 43200:
+			return
+	ht = random.choice(defaultTasks.keys())
+	taskName = random.choice(defaultTasks[ht])
+	task = models.Task(user=0, name=taskName, hashtag=ht, private=0, completed=True, timecompleted=datetime.datetime.now())
+	db.session.add(task)
+	db.session.commit()
 
 @app.route('/api/fbcallback', methods = ['GET'])
 def verify():
@@ -92,8 +107,10 @@ def register():
 			if (friend!=None):
 				newfriend1=models.Friends(userid=newuser.id,friendid=friend.id)
 				newfriend2=models.Friends(userid=friend.id,friendid=newuser.id)
+				newfriend3=models.Friends(userid=newuser.id,friendid=0)
 				db.session.add(newfriend1)
 				db.session.add(newfriend2)
+				db.session.add(newfriend3)
 				db.session.commit()
 		#service=gconnect(models.LifeMaxIds.query.first())
 		#body={'summary': 'User '+str(newuser.id)+'\'sLifeMaxCalendar'}
@@ -133,7 +150,6 @@ def imageforhashtag():
 def login():
 	try:
 		shortToken=request.args.get('userToken')
-
 		r=requests.get('https://graph.facebook.com/oauth/access_token?grant_type=fb_exchange_token&client_id='+FACEBOOK_CLIENT_ID+'&client_secret='+FACEBOOK_CLIENT_SECRET+'&fb_exchange_token='+shortToken)
 		longToken=parse_qs(r.text)['access_token'][0]
 		md5token=hashlib.md5(longToken).hexdigest()
@@ -156,6 +172,7 @@ def newsfeed(userid):
 		userToken=models.User.query.get(userid).md5token
 		if (hashToken!=userToken):
 			return "Error: Access Denied"
+		randomTask()
 		returndict={'items':[]}
 		maxResults=request.args.get('maxResults',None)
 		if (maxResults==None):
@@ -200,6 +217,7 @@ def addTimelessTask2(userId):
 		userToken=models.User.query.get(userId).md5token
 		if (hashToken!=userToken):
 			return "Error: Access Denied"
+		randomTask()
 		name=request.get_json().get('name')
 		pictureurl=request.get_json().get('pictureurl', None)
 		hashtag=request.get_json().get('hashtag')
@@ -219,6 +237,7 @@ def getTimelessTasks2(userId):
 		userToken=models.User.query.get(userId).md5token
 		if (hashToken!=userToken):
 			return "Error: Access Denied"
+		randomTask()
 		returndict={'items':[]}
 		for task in models.Task.query.filter(models.Task.user == userId).all():
 			returndict['items'].append(createTaskJSON(task))		
@@ -255,11 +274,12 @@ def updateTask(userId):
 		user=models.User.query.get(userId)
 		userToken=user.md5token
 		if (hashToken!=userToken):
-			return "HASH TOKEN Error: Access Denied"
+			return "Error: Access Denied"
 		taskid=request.get_json().get('id',None)
 		task=models.Task.query.get(taskid)
 		if (task.user!=userId):
-			return "TASK MATCH Error: Access Denied. Task User: %d, User ID: %d" %(task.user, userID)
+			return "Error: Access Denied"
+		randomTask()
 		name=request.get_json().get('name',None)
 		pictureurl=request.get_json().get('pictureurl',None)
 		hashtag=request.get_json().get('hashtag',None)
