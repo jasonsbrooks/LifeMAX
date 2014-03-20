@@ -110,6 +110,8 @@ def register():
 			friend=models.User.query.filter_by(fbid=friendid).first()
 			if (friend!=None):
 				newfriend1=models.Friends(userid=newuser.id,friendid=friend.id)
+				newfriend2=models.Friends(userId=friend.id,friendid=user.id)
+				
 				db.session.add(newfriend1)
 				db.session.add(newfriend2)
 				db.session.commit()
