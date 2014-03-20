@@ -151,7 +151,7 @@ def gethashtags():
 			response.append(objectforhashtag(hashtag))
 		json_resp = jsonify(hashtags=response)
 		print json_resp
-		return json
+		return json_resp
 	except:
 		print str(traceback.format_exception(*sys.exc_info()))
 		return str(traceback.format_exception(*sys.exc_info()))
