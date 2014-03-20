@@ -3,7 +3,7 @@ import datetime
 import time
 
 class TimestampMixin(object):
-    created_at = db.Column(db.DateTime, default=datetime.datetime.now())
+    created_at = db.Column(db.DateTime, default=datetime.datetime.utcnow())
 
 class LifeMaxIds(TimestampMixin, db.Model):
 	__tablename__="LifeMaxIds"
