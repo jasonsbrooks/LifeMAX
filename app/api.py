@@ -149,8 +149,8 @@ def gethashtags():
 		response = []
 		for hashtag in defaultTasks.keys():
 			response.append(objectforhashtag(hashtag))
-		json = jsonify(hashtags=response)
-		print json
+		json_resp = jsonify(hashtags=response)
+		print json_resp
 		return json
 	except:
 		print str(traceback.format_exception(*sys.exc_info()))
@@ -176,7 +176,9 @@ def login():
 			return "Error: User does not exist!"
 		db.session.query(models.User).filter(models.User.fbid==lookupid).update({"token":longToken,"md5token":md5token})
 		db.session.commit()
-		return jsonify(authToken=longToken,fbid=lookupid, id=loginuser.id)
+		json_resp = jsonify(authToken=longToken,fbid=lookupid, id=loginuser.id)
+		print json_resp
+		return json_resp
 	except:
 		print str(traceback.format_exception(*sys.exc_info()))
 		return str(traceback.format_exception(*sys.exc_info()))
@@ -205,31 +207,32 @@ def newsfeed(userid):
 			# for task in models.Task.query.filter_by(completion=True).order_by(desc(models.Task.timecompleted)).filter(models.Task.user.in_(listoffriends)).limit(maxResults).all():
 			for task in models.Task.query.order_by(desc(models.Task.timecompleted)).filter(models.Task.user.in_(listoffriends)).limit(maxResults).all():
 				returndict['items'].append(createTaskJSON(task))
-			json = jsonify(returndict)
-			print json
-			return json
+			json_resp = jsonify(returndict)
+			print json_resp
+			return json_resp
 		elif (hashtag != None and friendId == None):
 			for task in models.Task.query.filter_by(completed=True).order_by(desc(models.Task.timecompleted)).filter(models.Task.user.in_(listoffriends)).filter_by(hashtag=hashtag).limit(maxResults).all():
 				returndict['items'].append(createTaskJSON(task))
-			json = jsonify(returndict)
-			print json
-			return json
+			json_resp = jsonify(returndict)
+			print json_resp
+			return json_resp
 		elif (hashtag == None and friendId != None):
 			if ((models.User.query.get(friendId) not in models.User.get(userid).friends) or models.User.query.get(friendId).privacy==1):
 				return "Error: Access Denied"
 			for task in models.Task.query.filter_by(completed=True).order_by(desc(models.Task.timecompleted)).filter_by(user=friendId).limit(maxResults).all():
 				returndict['items'].append(createTaskJSON(task))
-			json = jsonify(returndict)
-			print json
-			return json
+			json_resp = jsonify(returndict)
+			print json_resp
+			return json_resp
 		elif (hashtag != None and friendId != None):
 			if ((models.User.query.get(friendId) not in models.User.get(userid).friends) or models.User.query.get(friendId).privacy==1):
 				return "Error: Access Denied"
 			for task in models.Task.query.filter_by(completed=True).order_by(desc(models.Task.timecompleted)).filter_by(user=friendId).filter_by(hashtag=hashtag).limit(maxResults).all():
 				returndict['items'].append(createTaskJSON(task))
-			json = jsonify(returndict)
-			print json
-			return json	except:
+			json_resp = jsonify(returndict)
+			print json_resp
+			return json_resp	
+	except:
 		print str(traceback.format_exception(*sys.exc_info()))
 		return str(traceback.format_exception(*sys.exc_info()))
 
@@ -250,9 +253,9 @@ def addTimelessTask2(userId):
 		newTask=models.Task(user=userId, name=name, hashtag=hashtag, pictureurl=pictureurl, private=private)
 		db.session.add(newTask)
 		db.session.commit()
-		json = jsonify(createTaskJSON(newTask))
-		print json
-		return json
+		json_resp = jsonify(createTaskJSON(newTask))
+		print json_resp
+		return json_resp
 	except:
 		print str(traceback.format_exception(*sys.exc_info()))
 		return str(traceback.format_exception(*sys.exc_info()))
