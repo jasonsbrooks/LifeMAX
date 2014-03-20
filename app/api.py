@@ -49,7 +49,7 @@ def randomTask():
 			return
 	ht = random.choice(defaultTasks.keys())
 	taskName = random.choice(defaultTasks[ht])
-	task = models.Task(user=0, name=taskName, hashtag=ht, private=0, completed=True, timecompleted=datetime.datetime.now())
+	task = models.Task(user=0, name=taskName, hashtag=ht, completed=True, timecompleted=datetime.datetime.now())
 	db.session.add(task)
 	db.session.commit()
 
