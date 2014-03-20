@@ -45,7 +45,8 @@ def randomTask():
 	if mostRecent is not None:
 		a = mostRecent.created_at
 		b = datetime.datetime.now()
-		if (b-a).total_seconds() < 43200:
+		# if (b-a).total_seconds() < 43200:
+		if (b-a).total_seconds() < 60:
 			return
 	ht = random.choice(defaultTasks.keys())
 	taskName = random.choice(defaultTasks[ht])
@@ -100,17 +101,17 @@ def register():
 		newuser=models.User(fbid=lookupid, token=longToken, md5token=md5token,name=name,profilepic=pic,privacy=privacy)
 		db.session.add(newuser)
 		db.session.commit()
+		maxfriend=models.Friends(userid=newuser.id,friendid=0)
+		db.session.add(maxfriend)
+		db.session.commit()
 		r=requests.get('https://graph.facebook.com/me/friends?access_token='+longToken)
 		for i in r.json()['data']:
 			friendid=i['id']
 			friend=models.User.query.filter_by(fbid=friendid).first()
 			if (friend!=None):
 				newfriend1=models.Friends(userid=newuser.id,friendid=friend.id)
-				newfriend2=models.Friends(userid=friend.id,friendid=newuser.id)
-				newfriend3=models.Friends(userid=newuser.id,friendid=0)
 				db.session.add(newfriend1)
 				db.session.add(newfriend2)
-				db.session.add(newfriend3)
 				db.session.commit()
 		#service=gconnect(models.LifeMaxIds.query.first())
 		#body={'summary': 'User '+str(newuser.id)+'\'sLifeMaxCalendar'}
