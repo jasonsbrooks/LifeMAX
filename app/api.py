@@ -139,14 +139,27 @@ def privacychange(userid):
 		print str(traceback.format_exception(*sys.exc_info()))
 		return str(traceback.format_exception(*sys.exc_info()))
 
+def objectforhashtag(hashtag):
+	response = {'imageurl' : imageAssociations[hashtag], 'hashtag' : hashtag}
+	return response
+
 @app.route('/api/hashtags', methods = ['GET'])
 def gethashtags():
-	return jsonify(hashtags=defaultTasks.keys())
+	try:
+		response = []
+		for hashtag in defaultTasks.key():
+			response.append(objectforhashtag(hashtag))
+		json = jsonify(hashtags=response)
+		print json
+		return json
+	except:
+		print str(traceback.format_exception(*sys.exc_info()))
+		return str(traceback.format_exception(*sys.exc_info()))
 
-@app.route('/api/imageforhashtag', methods=['POST'])
+@app.route('/api/imageforhashtag', methods=['GET'])
 def imageforhashtag():
 	hashtag = request.get_json().get('hashtag')
-	response = {'imageurl' : imageAssociations[hashtag], 'hashtag' : hashtag}
+	response = objectforhashtag(hashtag)
 	return jsonify(response)
 
 @app.route('/api/login', methods = ['GET'])
