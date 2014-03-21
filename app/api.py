@@ -1,6 +1,6 @@
 import requests
 from app import app,db,models
-from flask import request,jsonify,redirect,Response
+from flask import request,jsonify,redirect,Response, abort
 from urlparse import parse_qs
 import hashlib
 import re
