@@ -157,11 +157,15 @@ def gethashtags():
 
 @app.route('/api/imageforhashtag', methods=['GET'])
 def imageforhashtag():
-	hashtag = request.args.get('hashtag')
-	imageurl = imageAssociations.get('hashtag', none)
-	print '%s -> %s' (hashtag, imageurl)
-	return redirect(imageurl, code=302)
-
+	try:
+		hashtag = request.args.get('hashtag')
+		imageurl = imageAssociations.get('hashtag', none)
+		# print '%s -> %s' (hashtag, imageurl)
+		return redirect(imageurl, code=302)
+	except: 
+		print str(traceback.format_exception(*sys.exc_info()))
+		return str(traceback.format_exception(*sys.exc_info()))
+		
 @app.route('/api/login', methods = ['GET'])
 def login():
 	try:
