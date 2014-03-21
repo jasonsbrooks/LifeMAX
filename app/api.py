@@ -197,13 +197,16 @@ def newsfeed(userid):
 		friendId=request.args.get('friendId',None)
 		hashtag=request.args.get('hashtag',None)
 		listoffriends=[]
-		listoffriends.append(userid)
+		listoffriends.append()
 		friendtable=models.User.query.get(userid).friends
 		for f in friendtable:
 			if (models.User.query.get(f.friendid).privacy==0):
 				listoffriends.append(f.friendid)
 		if (hashtag == None and friendId == None):
-			for task in models.Task.query.order_by(desc(models.Task.timecompleted)).filter(models.Task.user.in_(listoffriends)).filter_by(private=False).limit(maxResults).all():
+			a = models.Task.query.filter(models.Task.user.in_(listoffriends)).filter_by(private=False)
+			b = models.Task.query.filter(models.Task.user_in([userid]))
+			u = a.union(b).order_by(desc(models.Task.timecompleted), desc(models.Task.created_at)).limit(maxResults).all()
+			for task in u:
 				returndict['items'].append(createTaskJSON(task))
 			json_resp = jsonify(returndict)
 			print json_resp
