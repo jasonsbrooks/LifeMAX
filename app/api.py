@@ -203,7 +203,7 @@ def newsfeed(userid):
 			if (models.User.query.get(f.friendid).privacy==0):
 				listoffriends.append(f.friendid)
 		if (hashtag == None and friendId == None):
-			for task in models.Task.query.order_by(desc(models.Task.timecompleted)).filter(models.Task.user.in_(listoffriends)).limit(maxResults).all():
+			for task in models.Task.query.order_by(desc(models.Task.timecompleted)).filter(models.Task.user.in_(listoffriends)).filter_by(private=False).limit(maxResults).all():
 				returndict['items'].append(createTaskJSON(task))
 			json_resp = jsonify(returndict)
 			print json_resp
