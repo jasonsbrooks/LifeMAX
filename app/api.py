@@ -158,9 +158,9 @@ def gethashtags():
 @app.route('/api/imageforhashtag', methods=['GET'])
 def imageforhashtag():
 	hashtag = request.args.get('hashtag')
-	resp = imageAssociations[hashtag]
-	print resp
-	return resp
+	imagurl = imageAssociations[hashtag]
+	print imagurl
+	return redirect(imagurl, code=302)
 
 @app.route('/api/login', methods = ['GET'])
 def login():
