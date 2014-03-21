@@ -163,7 +163,7 @@ def imageforhashtag():
 		# print '%s -> %s' (hashtag, imageurl)
 		if(imageurl != None):
 			return redirect(imageurl, code=302)
-		return None
+		abort(404)
 	except: 
 		print str(traceback.format_exception(*sys.exc_info()))
 		return str(traceback.format_exception(*sys.exc_info()))
