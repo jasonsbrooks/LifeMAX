@@ -1,5 +1,4 @@
 defaultTasks = {
-    "#MICAH": [],
     "#foodie": [
         "Eat a Chipotle burrito",
         "Go to the foodcarts at the top of Whitney",
@@ -181,8 +180,7 @@ defaultTasks = {
     ]
 }
 
-imageAssociations = {'#MICAH': 'http://lorempixel.com/400/200/sports/1',
-                    '#yalebucketlist':'http://lorempixel.com/400/200/sports/1', 
+imageAssociations = {'#yalebucketlist':'http://lorempixel.com/400/200/sports/1', 
 					'#dancemoves':'http://cf.ltkcdn.net/dance/images/std/53712-419x286-FreeUrbanDanceMoves.jpg', 
 					'#growth':'http://www.jaimesoriano.net/wp-content/uploads/2010/07/personal-growth1.jpg', 
 					'#yalesports':'http://sportzedgect.s3.amazonaws.com/wp-content/uploads/2013/06/Yale-hockey1.jpg', 
