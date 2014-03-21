@@ -166,6 +166,7 @@ def login():
 	try:
 		shortToken=request.args.get('userToken')
 		r=requests.get('https://graph.facebook.com/oauth/access_token?grant_type=fb_exchange_token&client_id='+FACEBOOK_CLIENT_ID+'&client_secret='+FACEBOOK_CLIENT_SECRET+'&fb_exchange_token='+shortToken)
+		print r.text
 		longToken=parse_qs(r.text)['access_token'][0]
 		md5token=hashlib.md5(longToken).hexdigest()
 		r=requests.get('https://graph.facebook.com/me?access_token='+longToken)
@@ -179,6 +180,7 @@ def login():
 		print json_resp
 		return json_resp
 	except:
+
 		print str(traceback.format_exception(*sys.exc_info()))
 		return str(traceback.format_exception(*sys.exc_info()))
 
