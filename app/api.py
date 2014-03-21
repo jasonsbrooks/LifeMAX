@@ -29,12 +29,6 @@ AWS_ACCESS_KEY_ID = os.environ['AWS_ACCESS_KEY_ID']
 AWS_SECRET_ACCESS_KEY = os.environ['AWS_SECRET_ACCESS_KEY']
 true=True
 
-class ResourceNotFound(ex.HTTPException):
-    code = 404
-    description = '<p>resource not found</p>'
-
-abort.mappings[404] = ResourceNotFound
-
 def createTaskJSON(task):
 	u = models.User.query.get(task.user)
 	userJSON = {'id' : u.id, 'name' : u.name, 'fbid': u.fbid}
@@ -169,7 +163,8 @@ def imageforhashtag():
 		# print '%s -> %s' (hashtag, imageurl)
 		if(imageurl != None):
 			return redirect(imageurl, code=302)
-		abort(404)
+		return Response('', status=404)
+
 	except: 
 		print str(traceback.format_exception(*sys.exc_info()))
 		return str(traceback.format_exception(*sys.exc_info()))
