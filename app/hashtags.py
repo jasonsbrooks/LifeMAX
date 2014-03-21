@@ -1,4 +1,5 @@
 defaultTasks = {
+    "#MICAH": [],
     "#foodie": [
         "Eat a Chipotle burrito",
         "Go to the foodcarts at the top of Whitney",
