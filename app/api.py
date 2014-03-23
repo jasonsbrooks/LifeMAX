@@ -212,8 +212,8 @@ def newsfeed(userid):
 			if (models.User.query.get(f.friendid).privacy==0):
 				listoffriends.append(f.friendid)
 		if (hashtag == None and friendId == None):
-			a = models.Task.query.filter(models.Task.user.in_(listoffriends)).filter_by(private=False)
-			b = models.Task.query.filter(models.Task.user.in_([userid]))
+			a = models.Task.query.filter(models.Task.user.in_(listoffriends)).filter_by(private=False).filter_by(completed=True)
+			b = models.Task.query.filter(models.Task.user.in_([userid])).filter_by(completed=True)
 			u = a.union(b).order_by(desc(models.Task.timecompleted), desc(models.Task.created_at)).limit(maxResults).all()
 			for task in u:
 				returndict['items'].append(createTaskJSON(task))
