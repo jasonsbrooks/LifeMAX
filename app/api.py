@@ -397,8 +397,11 @@ def updateTask(userId):
 		hashtag=request.get_json().get('hashtag',None)
 		private=request.get_json().get('private',None)
 		completed=request.get_json().get('completed',None)
+		description=request.get_json().get('desc', None)
 		if (name!=None):
 			task.name=name
+		if (desc!=None):
+			task.desc=desc
 		if (pictureurl!=None):
 			task.pictureurl=pictureurl
 		if (hashtag!=None):
