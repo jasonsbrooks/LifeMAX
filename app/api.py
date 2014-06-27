@@ -315,7 +315,7 @@ def addTimelessTask2(userId):
 		hashtag=request.get_json().get('hashtag')
 		private=request.get_json().get('private')
 		completed=request.get_json().get('completed', False)
-		description=request.get_json().get('desc', None)
+		description=request.get_json().get('description', None)
 		newTask=models.Task(user=userId, description=description, name=name, hashtag=hashtag, pictureurl=pictureurl, private=private, created_at=datetime.datetime.utcnow(), completed=completed)
 		db.session.add(newTask)
 		db.session.commit()
@@ -397,7 +397,7 @@ def updateTask(userId):
 		hashtag=request.get_json().get('hashtag',None)
 		private=request.get_json().get('private',None)
 		completed=request.get_json().get('completed',None)
-		description=request.get_json().get('desc', None)
+		description=request.get_json().get('description', None)
 		if (name!=None):
 			task.name=name
 		if (desc!=None):
