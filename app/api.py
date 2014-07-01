@@ -351,7 +351,7 @@ def getLeaders(userId):
 			return "Error: Access Denied"
 		returndict={'users':[]}
 		listoffriends=[]
-		friendtable=models.User.query.get(userid).friends
+		friendtable=models.User.query.get(userId).friends
 		for f in friendtable:
 			listoffriends.append(f.friendid)
 		for u in models.User.query.filter(models.User.id.in_(listoffriends)).order_by(models.User.points.desc()).limit(10).all():
