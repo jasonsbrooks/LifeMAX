@@ -350,8 +350,12 @@ def getLeaders(userId):
 		if (hashToken!=userToken):
 			return "Error: Access Denied"
 		returndict={'users':[]}
-		for u in models.User.query.order_by(models.User.points.desc()):
-			returndict['users'].append({'id' : u.id, 'name' : u.name, 'fbid': u.fbid, 'picture': u.profilepic})		
+		listoffriends=[]
+		friendtable=models.User.query.get(userid).friends
+		for f in friendtable:
+			listoffriends.append(f.friendid)
+		for u in models.User.query.filter(models.User.id.in_(listoffriends)).order_by(models.User.points.desc()).limit(10).all():
+			returndict['users'].append({'id' : u.id, 'score' : u.points,'name' : u.name, 'fbid': u.fbid, 'picture': u.profilepic})		
 		return jsonify(returndict)
 	except:
 		print str(traceback.format_exception(*sys.exc_info()))
@@ -389,6 +393,7 @@ def updateTask(userId):
 			return "Error: Access Denied"
 		taskid=request.get_json().get('id',None)
 		task=models.Task.query.get(taskid)
+		print "Old Description: " + task.description
 		if (task.user!=userId):
 			return "Error: Access Denied"
 		randomTask()
@@ -398,10 +403,12 @@ def updateTask(userId):
 		private=request.get_json().get('private',None)
 		completed=request.get_json().get('completed',None)
 		description=request.get_json().get('description', None)
+		print "New Description: " + description
 		if (name!=None):
 			task.name=name
-		if (desc!=None):
-			task.desc=desc
+		if (description!=None):
+			print "Got here"
+			task.description=description
 		if (pictureurl!=None):
 			task.pictureurl=pictureurl
 		if (hashtag!=None):
@@ -416,6 +423,7 @@ def updateTask(userId):
 				task.completed = completed
 				task.timecompleted = datetime.datetime.utcnow()
 		db.session.commit()
+		print "New New: " + task.description
 		return jsonify(createTaskJSON(task))
 	except:
 		print str(traceback.format_exception(*sys.exc_info()))
