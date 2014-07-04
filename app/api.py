@@ -53,6 +53,7 @@ def randomTask():
 	db.session.add(task)
 	db.session.commit()
 
+
 @app.route('/api/fbcallback', methods = ['GET'])
 def verify():
 	challenge=0
@@ -206,42 +207,18 @@ def maxsuggests(userid):
 			maxResults=50
 		friendId=request.args.get('friendId',None)
 		hashtag=request.args.get('hashtag',None)
-		listoffriends=[]
-		friendtable=models.User.query.get(userid).friends
-		for f in friendtable:
-			if (models.User.query.get(f.friendid).privacy==0):
-				listoffriends.append(f.friendid)
 		if (hashtag == None and friendId == None):
-			a = models.Task.query.filter(models.Task.user.in_(listoffriends)).filter_by(private=False).filter_by(completed=True)
-			b = models.Task.query.filter(models.Task.user.in_([userid])).filter_by(completed=True)
-			u = a.union(b).order_by(desc(models.Task.timecompleted), desc(models.Task.created_at)).limit(maxResults).all()
+			a = models.Task.query.filter(models.Task.user.in_([0]))
+			hiddentaskids = []
+			for t in models.User.query.get(userid).hiddentasks.all():
+				hiddentaskids.append(t.taskid)
+			b = models.Task.query.filter(models.Task.id.in_(hiddentaskids))
+			u = a.except_(b).order_by(desc(models.Task.timecompleted), desc(models.Task.created_at)).limit(maxResults).all()
 			for task in u:
 				returndict['items'].append(createTaskJSON(task))
 			json_resp = jsonify(returndict)
 			print json_resp
 			return json_resp
-		# elif (hashtag != None and friendId == None):
-		# 	for task in models.Task.query.filter_by(completed=True).order_by(desc(models.Task.timecompleted)).filter(models.Task.user.in_(listoffriends)).filter_by(hashtag=hashtag).limit(maxResults).all():
-		# 		returndict['items'].append(createTaskJSON(task))
-		# 	json_resp = jsonify(returndict)
-		# 	print json_resp
-		# 	return json_resp
-		# elif (hashtag == None and friendId != None):
-		# 	if ((models.User.query.get(friendId) not in models.User.get(userid).friends) or models.User.query.get(friendId).privacy==1):
-		# 		return "Error: Access Denied"
-		# 	for task in models.Task.query.filter_by(completed=True).order_by(desc(models.Task.timecompleted)).filter_by(user=friendId).limit(maxResults).all():
-		# 		returndict['items'].append(createTaskJSON(task))
-		# 	json_resp = jsonify(returndict)
-		# 	print json_resp
-		# 	return json_resp
-		# elif (hashtag != None and friendId != None):
-		# 	if ((models.User.query.get(friendId) not in models.User.get(userid).friends) or models.User.query.get(friendId).privacy==1):
-		# 		return "Error: Access Denied"
-		# 	for task in models.Task.query.filter_by(completed=True).order_by(desc(models.Task.timecompleted)).filter_by(user=friendId).filter_by(hashtag=hashtag).limit(maxResults).all():
-		# 		returndict['items'].append(createTaskJSON(task))
-		# 	json_resp = jsonify(returndict)
-		# 	print json_resp
-		# 	return json_resp	
 	except:
 		print str(traceback.format_exception(*sys.exc_info()))
 		return str(traceback.format_exception(*sys.exc_info()))
@@ -265,6 +242,8 @@ def newsfeed(userid):
 		for f in friendtable:
 			if (models.User.query.get(f.friendid).privacy==0):
 				listoffriends.append(f.friendid)
+		if 0 in listoffriends:
+			listoffriends.remove(0)
 		if (hashtag == None and friendId == None):
 			a = models.Task.query.filter(models.Task.user.in_(listoffriends)).filter_by(private=False).filter_by(completed=True)
 			b = models.Task.query.filter(models.Task.user.in_([userid])).filter_by(completed=True)
@@ -357,6 +336,25 @@ def getLeaders(userId):
 		for u in models.User.query.filter(models.User.id.in_(listoffriends)).order_by(models.User.points.desc()).limit(10).all():
 			returndict['users'].append({'id' : u.id, 'score' : u.points,'name' : u.name, 'fbid': u.fbid, 'picture': u.profilepic})		
 		return jsonify(returndict)
+	except:
+		print str(traceback.format_exception(*sys.exc_info()))
+		return str(traceback.format_exception(*sys.exc_info()))
+
+@app.rotue('/api/user/<int:userId>/hidesuggestion', methods = ['POST'])
+def hideTask(userId):
+	try:
+		hashToken=request.args.get('hashToken')
+		taskId = request.get_json().get('taskId')
+		userToken=models.User.query.get(userId).md5token
+		if (hashToken!=userToken):
+			return "Error: Access Denied"
+		task = models.Task.query.get(taskId)
+		if (task.user != 0):
+			return jsonify(success=False)
+		hidden = models.HiddenTasks(userid=userId, taskid=taskId)
+		db.session.add(hidden)
+		db.session.commit()
+		return jsonify(success=True)
 	except:
 		print str(traceback.format_exception(*sys.exc_info()))
 		return str(traceback.format_exception(*sys.exc_info()))

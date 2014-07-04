@@ -26,6 +26,7 @@ class User(TimestampMixin, db.Model):
 	#gidcalendar=db.Column(db.String(100),nullable=True)
 	tasks = db.relationship('Task', backref = 'owner', lazy = 'dynamic', primaryjoin="Task.user==User.id")
 	friends=db.relationship('Friends', backref = 'owner', lazy= 'dynamic', primaryjoin="Friends.userid==User.id")
+	hiddentasks = db.relationship('HiddenTasks', backref='owner', lazy='dynamic', primaryjoin="HiddenTasks.userid==User.id")
 	privacy=db.Column(db.Integer)
 
 	def __repr__(self):
@@ -50,6 +51,15 @@ class Task(TimestampMixin, db.Model):
 
 	def __repr__(self):
 		return '#%d, User: %d, Name: %s, Hashtag: %s, PictureURL: %s, Privacy: %d, Time Completed: %s' %(self.id, self.user, self.name, self.hashtag, self.pictureurl, self.private, self.timecompleted)
+
+class HiddenTasks(TimestampMixin, db.Model):
+	__tablename__="HiddenTasks"
+	id = db.Column(db.Integer, primary_key=True)
+	userid = db.Column(db.Integer, db.ForeignKey('User.id'))
+	taskid = db.Column(db.Integer, db.ForeignKey('Task.id'))
+
+	def __repr__(self):
+		return '#%d: User: %d, Task: %d' %(self.id, self.userid, self.taskid)
 
 class Friends(TimestampMixin, db.Model):
 	__tablename__="Friends"
