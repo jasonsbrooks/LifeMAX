@@ -390,7 +390,6 @@ def updateTask(userId):
 			return "Error: Access Denied"
 		taskid=request.get_json().get('id',None)
 		task=models.Task.query.get(taskid)
-		print "Old Description: " + task.description
 		if (task.user!=userId):
 			return "Error: Access Denied"
 		randomTask()
@@ -400,11 +399,9 @@ def updateTask(userId):
 		private=request.get_json().get('private',None)
 		completed=request.get_json().get('completed',None)
 		description=request.get_json().get('description', None)
-		print "New Description: " + description
 		if (name!=None):
 			task.name=name
 		if (description!=None):
-			print "Got here"
 			task.description=description
 		if (pictureurl!=None):
 			task.pictureurl=pictureurl
@@ -420,7 +417,6 @@ def updateTask(userId):
 				task.completed = completed
 				task.timecompleted = datetime.datetime.utcnow()
 		db.session.commit()
-		print "New New: " + task.description
 		return jsonify(createTaskJSON(task))
 	except:
 		print str(traceback.format_exception(*sys.exc_info()))

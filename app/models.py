@@ -66,3 +66,6 @@ class Friends(TimestampMixin, db.Model):
 	id = db.Column(db.Integer, primary_key = True)
 	userid = db.Column(db.Integer, db.ForeignKey('User.id'))
 	friendid = db.Column(db.Integer, db.ForeignKey('User.id'))
+
+	def __repr__(self):
+		return '#%d: User: %d, Friend: %d' %(self.id, self.userid, self.friendid)
