@@ -111,7 +111,6 @@ def register():
 			if (friend!=None):
 				newfriend1=models.Friends(userid=newuser.id,friendid=friend.id)
 				newfriend2=models.Friends(userid=friend.id,friendid=newuser.id)
-
 				db.session.add(newfriend1)
 				db.session.add(newfriend2)
 				db.session.commit()
@@ -340,7 +339,7 @@ def getLeaders(userId):
 		print str(traceback.format_exception(*sys.exc_info()))
 		return str(traceback.format_exception(*sys.exc_info()))
 
-@app.rotue('/api/user/<int:userId>/hidesuggestion', methods = ['POST'])
+@app.route('/api/user/<int:userId>/hidesuggestion', methods = ['POST'])
 def hideTask(userId):
 	try:
 		hashToken=request.args.get('hashToken')
