@@ -45,7 +45,7 @@ def randomTask():
 	if mostRecent is not None:
 		a = mostRecent.created_at
 		b = datetime.datetime.utcnow()
-		if (b-a).total_seconds() < 30:
+		if (b-a).total_seconds() < 43200:
 			return
 	ht = random.choice(defaultTasks.keys())
 	taskName = random.choice(defaultTasks[ht])
@@ -211,8 +211,11 @@ def maxsuggests(userid):
 			hiddentaskids = []
 			for t in models.User.query.get(userid).hiddentasks.all():
 				hiddentaskids.append(t.taskid)
-			b = models.Task.query.filter(models.Task.id.in_(hiddentaskids))
-			u = a.except_(b).order_by(desc(models.Task.timecompleted), desc(models.Task.created_at)).limit(maxResults).all()
+			if hiddentaskids:
+				b = models.Task.query.filter(models.Task.id.in_(hiddentaskids))
+				u = a.except_(b).order_by(desc(models.Task.timecompleted), desc(models.Task.created_at)).limit(maxResults).all()
+			else:
+				u = a.order_by(desc(models.Task.timecompleted), desc(models.Task.created_at)).limit(maxResults).all()
 			for task in u:
 				returndict['items'].append(createTaskJSON(task))
 			json_resp = jsonify(returndict)
@@ -244,9 +247,13 @@ def newsfeed(userid):
 		if 0 in listoffriends:
 			listoffriends.remove(0)
 		if (hashtag == None and friendId == None):
-			a = models.Task.query.filter(models.Task.user.in_(listoffriends)).filter_by(private=False).filter_by(completed=True)
-			b = models.Task.query.filter(models.Task.user.in_([userid])).filter_by(completed=True)
-			u = a.union(b).order_by(desc(models.Task.timecompleted), desc(models.Task.created_at)).limit(maxResults).all()
+			if listoffriends:
+				a = models.Task.query.filter(models.Task.user.in_(listoffriends)).filter_by(private=False).filter_by(completed=True)
+				b = models.Task.query.filter(models.Task.user.in_([userid])).filter_by(completed=True)
+				u = a.union(b).order_by(desc(models.Task.timecompleted), desc(models.Task.created_at)).limit(maxResults).all()
+			else:
+				b = models.Task.query.filter(models.Task.user.in_([userid])).filter_by(completed=True)
+				u = b.order_by(desc(models.Task.timecompleted), desc(models.Task.created_at)).limit(maxResults).all()
 			for task in u:
 				returndict['items'].append(createTaskJSON(task))
 			json_resp = jsonify(returndict)
@@ -348,13 +355,11 @@ def hideTask(userId):
 		if (hashToken!=userToken):
 			return "Error: Access Denied"
 		task = models.Task.query.get(taskId)
-		print task
 		if (task.user != 0):
 			return jsonify(success=False)
 		hidden = models.HiddenTasks(userid=userId, taskid=taskId)
 		db.session.add(hidden)
 		db.session.commit()
-		print hidden
 		return jsonify(success=True)
 	except:
 		print str(traceback.format_exception(*sys.exc_info()))
