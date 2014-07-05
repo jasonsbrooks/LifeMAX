@@ -45,7 +45,7 @@ def randomTask():
 	if mostRecent is not None:
 		a = mostRecent.created_at
 		b = datetime.datetime.utcnow()
-		if (b-a).total_seconds() < 43200:
+		if (b-a).total_seconds() < 30:
 			return
 	ht = random.choice(defaultTasks.keys())
 	taskName = random.choice(defaultTasks[ht])
@@ -216,7 +216,7 @@ def maxsuggests(userid):
 			for task in u:
 				returndict['items'].append(createTaskJSON(task))
 			json_resp = jsonify(returndict)
-			print json_resp
+			print returndict
 			return json_resp
 	except:
 		print str(traceback.format_exception(*sys.exc_info()))
@@ -250,7 +250,7 @@ def newsfeed(userid):
 			for task in u:
 				returndict['items'].append(createTaskJSON(task))
 			json_resp = jsonify(returndict)
-			print json_resp
+			print returndict
 			return json_resp
 		# elif (hashtag != None and friendId == None):
 		# 	for task in models.Task.query.filter_by(completed=True).order_by(desc(models.Task.timecompleted)).filter(models.Task.user.in_(listoffriends)).filter_by(hashtag=hashtag).limit(maxResults).all():
@@ -342,17 +342,19 @@ def getLeaders(userId):
 @app.route('/api/user/<int:userId>/hidesuggestion', methods = ['POST'])
 def hideTask(userId):
 	try:
-		hashToken=request.args.get('hashToken')
+		hashToken=request.get_json().get('hashToken')
 		taskId = request.get_json().get('taskId')
 		userToken=models.User.query.get(userId).md5token
 		if (hashToken!=userToken):
 			return "Error: Access Denied"
 		task = models.Task.query.get(taskId)
+		print task
 		if (task.user != 0):
 			return jsonify(success=False)
 		hidden = models.HiddenTasks(userid=userId, taskid=taskId)
 		db.session.add(hidden)
 		db.session.commit()
+		print hidden
 		return jsonify(success=True)
 	except:
 		print str(traceback.format_exception(*sys.exc_info()))
