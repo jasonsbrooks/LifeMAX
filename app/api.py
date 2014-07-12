@@ -53,6 +53,12 @@ def randomTask():
 	db.session.add(task)
 	db.session.commit()
 
+def manualRandomTask():
+	ht = random.choice(defaultTasks.keys())
+	taskName = random.choice(defaultTasks[ht])
+	task = models.Task(user=0, name=taskName, description="Hello matey isn't it a fine day for some swimming? I hope we win the world cup soon", hashtag=ht, completed=True, timecompleted=datetime.datetime.utcnow(), created_at=datetime.datetime.utcnow())
+	db.session.add(task)
+	db.session.commit()
 
 @app.route('/api/fbcallback', methods = ['GET'])
 def verify():
