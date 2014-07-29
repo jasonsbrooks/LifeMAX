@@ -312,10 +312,16 @@ def addTimelessTask2(userId):
 		db.session.commit()
 		json_resp = jsonify(createTaskJSON(newTask))
 		print json_resp
+		maxSuggestsTask = models.Task.query.filter(models.Task.name == name).filter(models.Task.user == 0).first()
+		if maxSuggestsTask:
+			hidden = models.HiddenTasks(userid=userId, taskid=maxSuggestsTask.id)
+			db.session.add(hidden)
+			db.session.commit()
 		return json_resp
 	except:
 		print str(traceback.format_exception(*sys.exc_info()))
 		return str(traceback.format_exception(*sys.exc_info()))
+
 
 @app.route('/api/user/<int:userId>/tasks', methods = ['GET'])
 def getTimelessTasks2(userId):
@@ -342,6 +348,7 @@ def getLeaders(userId):
 			return "Error: Access Denied"
 		returndict={'users':[]}
 		listoffriends=[]
+		listoffriends.append(userId)
 		friendtable=models.User.query.get(userId).friends
 		for f in friendtable:
 			listoffriends.append(f.friendid)
