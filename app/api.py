@@ -354,10 +354,10 @@ def getLeaders(userId):
 		returndict={'users':[]}
 		listoffriends=[]
 		listoffriends.append(userId)
-		listoffriends.remove(0)
 		friendtable=models.User.query.get(userId).friends
 		for f in friendtable:
 			listoffriends.append(f.friendid)
+		listoffriends.remove(0)
 		for u in models.User.query.filter(models.User.id.in_(listoffriends)).order_by(models.User.points.desc()).limit(10).all():
 			returndict['users'].append({'id' : u.id, 'score' : u.points,'name' : u.name, 'fbid': u.fbid, 'picture': u.profilepic})		
 		return jsonify(returndict)
