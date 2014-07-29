@@ -295,7 +295,8 @@ def newsfeed(userid):
 def addTimelessTask2(userId):
 	try:
 		hashToken=request.get_json().get('hashToken')
-		userToken=models.User.query.get(userId).md5token
+		u = models.User.query.get(userId)
+		userToken=u.md5token
 		if (hashToken!=userToken):
 			resp = "Error: Access Denied"
 			print resp
@@ -312,6 +313,11 @@ def addTimelessTask2(userId):
 		db.session.commit()
 		json_resp = jsonify(createTaskJSON(newTask))
 		print json_resp
+		
+		if completed == True:
+			u.points = u.points + 1
+			db.session.commit()
+
 		maxSuggestsTask = models.Task.query.filter(models.Task.name == name).filter(models.Task.user == 0).first()
 		if maxSuggestsTask:
 			hidden = models.HiddenTasks(userid=userId, taskid=maxSuggestsTask.id)
@@ -430,10 +436,13 @@ def updateTask(userId):
 		if (private!=None):
 			task.private=private
 		if (completed==0):
+			if (task.completed == 1):
+				user.points = user.points - 1
 			task.completed=completed
 			task.timecompleted=None
 		elif (completed==1):
 			if (task.completed == 0):
+				user.points = user.points + 1
 				task.completed = completed
 				task.timecompleted = datetime.datetime.utcnow()
 		db.session.commit()
