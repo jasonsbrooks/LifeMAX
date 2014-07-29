@@ -194,7 +194,6 @@ def login():
 		print json_resp
 		return json_resp
 	except:
-
 		print str(traceback.format_exception(*sys.exc_info()))
 		return str(traceback.format_exception(*sys.exc_info()))
 
@@ -355,6 +354,7 @@ def getLeaders(userId):
 		returndict={'users':[]}
 		listoffriends=[]
 		listoffriends.append(userId)
+		listoffriends.remove(0)
 		friendtable=models.User.query.get(userId).friends
 		for f in friendtable:
 			listoffriends.append(f.friendid)
