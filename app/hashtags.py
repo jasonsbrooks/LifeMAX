@@ -15,7 +15,6 @@ defaultTasks = {
         "The Pop and Lock",
         "The Shopping Cart",
         "The John Travolta",
-        "Thrusting",
         "Hammertime",
         "The MoonWalk",
         "Hoedown Throwdown",
@@ -24,12 +23,8 @@ defaultTasks = {
         "California Curls Dance",
         "Thriller",
         "The Worm",
-        "Toprocking",
         "The Cabbage Patch",
         "Saturday Night Fever",
-        "The Booty Slap",
-        "The Nipple Rub",
-        "The Drunk Man",
         "Slow Dancing",
         "The Window Wiper",
         "The Spongebob",
@@ -40,7 +35,6 @@ defaultTasks = {
         "The Hokie Pokie",
         "The Waltz",
         "The Chris Tucker",
-        "The Passed Out",
         "The Beat it Dance",
         "The Can Can",
         "YMCA",
@@ -158,10 +152,9 @@ defaultTasks = {
         "Play basketball at PWG",
         "Order a Wenzel",
         "Go to the Yale Observatory",
-        "make a fine meal given dining hall ingredients",
+        "Make a fine meal given dining hall ingredients",
         "Go to PWG Sauna",
-        "Go to a Yale Naked Party",
-        "Throw Frisbee in the courtyard"
+        "Throw a frisbee in the courtyard"
     ],
     "#yalesports": [
         "Go to a Yale Hockey Game",
@@ -169,7 +162,7 @@ defaultTasks = {
         "Go to a Hockey Game at Ingalls Rink",
         "Go to a Yale Football Game",
         "Go to a Squash Match",
-        "Wall st. pizza challenge"
+        "Wall St. pizza challenge"
     ],
     "#yaleculture": [
         "Visit Peabody",
