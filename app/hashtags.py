@@ -95,10 +95,9 @@ defaultTasks = {
         "Play basketball at PWG",
         "Order a Wenzel",
         "Go to the Yale Observatory",
-        "make a fine meal given dining hall ingredients",
+        "Make a fine meal given dining hall ingredients",
         "Go to PWG Sauna",
-        "Go to a Yale Naked Party",
-        "Throw Frisbee in the courtyard"
+        "Throw a frisbee in the courtyard"
     ],
     "#yalesports": [
         "Go to a Yale Hockey Game",
@@ -106,7 +105,7 @@ defaultTasks = {
         "Go to a Hockey Game at Ingalls Rink",
         "Go to a Yale Football Game",
         "Go to a Squash Match",
-        "Wall st. pizza challenge"
+        "Wall St. pizza challenge"
     ],
     "#yaleculture": [
         "Visit Peabody",

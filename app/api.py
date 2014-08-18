@@ -45,7 +45,7 @@ def randomTask():
 	if mostRecent is not None:
 		a = mostRecent.created_at
 		b = datetime.datetime.utcnow()
-		if (b-a).total_seconds() < 43200:
+		if (b-a).total_seconds() < 17280:
 			return
 	ht = random.choice(defaultTasks.keys())
 	taskName = random.choice(defaultTasks[ht])
