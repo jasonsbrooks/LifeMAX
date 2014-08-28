@@ -116,18 +116,18 @@ defaultTasks = {
     ]
 }
 
-imageAssociations = {"#yalebucketlist":"http://1drv.ms/XfwkSX",
-                    "#growth":"http://1drv.ms/1nMkftj",
-                    "#yalesports":"http://1drv.ms/XfxyNR",
-                    "#newhavenbars":"http://1drv.ms/1l0sSGp",
-                    "#newhavenoutdoors":"http://1drv.ms/1r7nBz1",
-                    "#yaleculture":"http://1drv.ms/1mGFjCa",
-                    "#drinking":"http://1drv.ms/1mGHeGM",
-                    "#day2dayhappiness":"http://1drv.ms/1nMxH0p",
-                    "#productivity":"http://1drv.ms/1l0DBR6",
-                    "#entertainment":"http://1drv.ms/1mGKfa9",
-                    "#studyspots":"http://1drv.ms/1l0JDkB",
-                    "#foodie": "http://1drv.ms/1nMEHdO"}
+imageAssociations = {"#yalebucketlist":"https://s3-us-west-2.amazonaws.com/lifemax-staging/Yalelogo.jpg",
+                    "#growth":"https://s3-us-west-2.amazonaws.com/lifemax-staging/Yalelogo.jpg",
+                    "#yalesports":"https://s3-us-west-2.amazonaws.com/lifemax-staging/Yalelogo.jpg",
+                    "#newhavenbars":"https://s3-us-west-2.amazonaws.com/lifemax-staging/Yalelogo.jpg",
+                    "#newhavenoutdoors":"https://s3-us-west-2.amazonaws.com/lifemax-staging/Yalelogo.jpg",
+                    "#yaleculture":"https://s3-us-west-2.amazonaws.com/lifemax-staging/Yalelogo.jpg",
+                    "#drinking":"https://s3-us-west-2.amazonaws.com/lifemax-staging/Yalelogo.jpg",
+                    "#day2dayhappiness":"https://s3-us-west-2.amazonaws.com/lifemax-staging/Yalelogo.jpg",
+                    "#productivity":"https://s3-us-west-2.amazonaws.com/lifemax-staging/Yalelogo.jpg",
+                    "#entertainment":"https://s3-us-west-2.amazonaws.com/lifemax-staging/Yalelogo.jpg",
+                    "#studyspots":"https://s3-us-west-2.amazonaws.com/lifemax-staging/Yalelogo.jpg",
+                    "#foodie": "https://s3-us-west-2.amazonaws.com/lifemax-staging/Yalelogo.jpg"}
 
 
 
