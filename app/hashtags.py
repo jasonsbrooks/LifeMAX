@@ -116,18 +116,18 @@ defaultTasks = {
     ]
 }
 
-imageAssociations = {"#yalebucketlist":"https://s3-us-west-2.amazonaws.com/lifemax-staging/Yalelogo.jpg",
-                    "#growth":"https://s3-us-west-2.amazonaws.com/lifemax-staging/Yalelogo.jpg",
-                    "#yalesports":"https://s3-us-west-2.amazonaws.com/lifemax-staging/Yalelogo.jpg",
-                    "#newhavenbars":"https://s3-us-west-2.amazonaws.com/lifemax-staging/Yalelogo.jpg",
-                    "#newhavenoutdoors":"https://s3-us-west-2.amazonaws.com/lifemax-staging/Yalelogo.jpg",
-                    "#yaleculture":"https://s3-us-west-2.amazonaws.com/lifemax-staging/Yalelogo.jpg",
-                    "#drinking":"https://s3-us-west-2.amazonaws.com/lifemax-staging/Yalelogo.jpg",
-                    "#day2dayhappiness":"https://s3-us-west-2.amazonaws.com/lifemax-staging/Yalelogo.jpg",
-                    "#productivity":"https://s3-us-west-2.amazonaws.com/lifemax-staging/Yalelogo.jpg",
-                    "#entertainment":"https://s3-us-west-2.amazonaws.com/lifemax-staging/Yalelogo.jpg",
-                    "#studyspots":"https://s3-us-west-2.amazonaws.com/lifemax-staging/Yalelogo.jpg",
-                    "#foodie": "https://s3-us-west-2.amazonaws.com/lifemax-staging/Yalelogo.jpg"}
+imageAssociations = {"#yalebucketlist":"https://s3-us-west-2.amazonaws.com/lifemax-staging/yalebucketlist.jpg",
+                    "#growth":"https://s3-us-west-2.amazonaws.com/lifemax-staging/growth.jpg",
+                    "#yalesports":"https://s3-us-west-2.amazonaws.com/lifemax-staging/yalesports.jpg",
+                    "#newhavenbars":"https://s3-us-west-2.amazonaws.com/lifemax-staging/drinks.jpg",
+                    "#newhavenoutdoors":"https://s3-us-west-2.amazonaws.com/lifemax-staging/outdoors.jpg",
+                    "#yaleculture":"https://s3-us-west-2.amazonaws.com/lifemax-staging/culture.jpg",
+                    "#drinking":"https://s3-us-west-2.amazonaws.com/lifemax-staging/drinks2.jpg",
+                    "#day2dayhappiness":"https://s3-us-west-2.amazonaws.com/lifemax-staging/happiness.jpg",
+                    "#productivity":"https://s3-us-west-2.amazonaws.com/lifemax-staging/organization.jpg",
+                    "#entertainment":"https://s3-us-west-2.amazonaws.com/lifemax-staging/entertainment.jpg",
+                    "#studyspots":"https://s3-us-west-2.amazonaws.com/lifemax-staging/studyspots.jpg",
+                    "#foodie": "https://s3-us-west-2.amazonaws.com/lifemax-staging/foodie.jpg"}
 
 
 
