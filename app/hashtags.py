@@ -116,7 +116,7 @@ defaultTasks = {
     ]
 }
 
-imageAssociations = {"#yalebucketlist":"https://s3-us-west-2.amazonaws.com/lifemax-staging/yalebucketlist.jpg",
+imageAssociations = {"#yalebucketlist":"https://s3-us-west-2.amazonaws.com/lifemax-staging/ylogo.jpg",
                     "#growth":"https://s3-us-west-2.amazonaws.com/lifemax-staging/growth.jpg",
                     "#yalesports":"https://s3-us-west-2.amazonaws.com/lifemax-staging/yalesports.jpg",
                     "#newhavenbars":"https://s3-us-west-2.amazonaws.com/lifemax-staging/drinks.jpg",
